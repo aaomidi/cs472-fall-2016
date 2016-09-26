@@ -37,7 +37,7 @@ Questions:
 
 3. 
 	1. Non Encrypted: I have applied the filter `ip.addr==94.182.146.195` which is what was resolved for www.asriran.com.
-		* We can see that the `HTTP GET / HTTP/1.1` was requested:  ![HTTP GET Request](https://i.imgur.com/ZqvjFb9.png).
+		* We can see that the `HTTP GET / HTTP/1.1` was requested, so we can see the exact connection in plain text: ![HTTP GET Request](https://i.imgur.com/ZqvjFb9.png).
 		* It was responded to about 1.1 seconds later (The server is in Iran so this type of latency is to be expected): ![HTTP GET Response](https://i.imgur.com/eq28tL3.png)
 	2. Encrypted: I have applied the filter `ip.addr==151.101.193.140` which is what was resolved for www.reddit.com.
 		* As you can see, there are no indications of what type of request is being made due to the TLS encryption. This way anyone listening in on the connection (eg ISP, "bad people") would only know you're connected to that IP, not what you're doing on that IP. ![Connection to Reddit](https://i.imgur.com/4iXIAXp.png)
