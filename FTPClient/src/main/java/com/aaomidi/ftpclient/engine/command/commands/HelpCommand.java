@@ -12,7 +12,7 @@ public class HelpCommand extends FTPCommand {
                 client,
                 "Help",
                 "Displays information about the commands and what actions they preform.",
-                "h", "?", "whatisdis", "wot", "?", "helpme", "plz", "tfw"
+                "h", "?", "whatisdis", "wot", "?", "helpme", "plz", "tfw", "newnumberwhodis?"
         );
     }
 
