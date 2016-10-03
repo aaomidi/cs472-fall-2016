@@ -277,6 +277,16 @@ public class FTPClient {
         return output;
     }
 
+    public void prepareConnection() throws IOException {
+        if (activeDataServerSocket != null && !activeDataServerSocket.isClosed())
+            return;
+        if (isActiveMode()) {
+            commands.get("port").execute("", new LinkedList<>());
+        } else {
+            // Do nothing for now
+        }
+    }
+
     @ToString
     public static class FTPClientBuilder {
         private String hostname;

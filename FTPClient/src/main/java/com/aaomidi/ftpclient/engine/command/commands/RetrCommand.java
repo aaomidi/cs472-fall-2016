@@ -30,6 +30,7 @@ public class RetrCommand extends FTPCommand {
         client.setFileTransfer(true);
         client.setFileName(args.get(0));
         try {
+            client.prepareConnection();
             client.writeControl(String.format("RETR %s", args.get(0)));
             client.printOutput(client.getOutput(), Level.INFO, Type.CONTROL);
         } catch (Exception e) {

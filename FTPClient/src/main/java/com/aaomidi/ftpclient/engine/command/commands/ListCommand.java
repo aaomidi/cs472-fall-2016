@@ -22,6 +22,7 @@ public class ListCommand extends FTPCommand {
     @Override
     public void execute(String cmd, List<String> args) {
         try {
+            client.prepareConnection();
             client.writeControl("list");
             client.printOutput(client.getOutput(), Level.INFO, Type.CONTROL);
         } catch (IOException e) {
