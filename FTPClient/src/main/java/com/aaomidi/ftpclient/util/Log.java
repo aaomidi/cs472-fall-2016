@@ -1,6 +1,8 @@
 package com.aaomidi.ftpclient.util;
 
 
+import com.aaomidi.ftpclient.engine.lang.Type;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,14 +25,19 @@ public class Log {
         writeToFile();
     }
 
-    public static void log(Level level, Object msg, Object... format) {
+    public static void log(Level level, Type type, Object msg, Object... format) {
         if (logLevel.intValue() > level.intValue()) {
             return;
         }
-        String m = String.format("%s - %s - %s", sdf.format(new Date()), level.getName(), String.format(msg.toString(), format));
+        String m = null;
+        try {
+            m = String.format("%s - %s - %s - %s", sdf.format(new Date()), level.getName(), type.toString(), String.format(msg.toString(), format));
+            print(m);
+        } catch (Exception ex) {
+            m = String.format("%s - %s - %s - %s", sdf.format(new Date()), level.getName(), type.toString(), msg.toString());
+            System.out.println(m);
+        }
         logMessages.add(m);
-
-        print(m);
     }
 
     public static void print(Object msg, Object... format) {

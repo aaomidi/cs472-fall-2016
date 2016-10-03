@@ -1,6 +1,7 @@
 package com.aaomidi.ftpclient;
 
 import com.aaomidi.ftpclient.engine.FTPClient;
+import com.aaomidi.ftpclient.engine.lang.Type;
 import com.aaomidi.ftpclient.util.Log;
 
 import java.io.File;
@@ -21,7 +22,7 @@ public class Main {
         int argCount = args.length;
 
         if (argCount < 2) {
-            Log.log(Level.SEVERE, "Not enough arguments were entered. Shutting down.");
+            Log.log(Level.SEVERE, Type.LOCAL, "Not enough arguments were entered. Shutting down.");
             System.exit(-1);
         }
 
@@ -30,42 +31,42 @@ public class Main {
 
         File file = new File(args[1]);
         if (file.exists()) {
-            Log.log(Level.INFO, "This file will be over-written. Press any key to continue.");
+            Log.log(Level.INFO, Type.LOCAL, "This file will be over-written. Press any key to continue.");
             scanner.nextLine();
         }
 
-        Log.log(Level.FINE, "Initiating log file.");
+        Log.log(Level.FINE, Type.LOCAL, "Initiating log file.");
         try {
             prepareFile(file);
         } catch (IOException e) {
-            Log.log(Level.SEVERE, "Problem initiating the file. Exiting.");
+            Log.log(Level.SEVERE, Type.LOCAL, "Problem initiating the file. Exiting.");
             e.printStackTrace();
-            System.exit(-1  );
+            System.exit(-1);
         }
-        Log.log(Level.FINE, "\tLog file initiated.");
+        Log.log(Level.FINE, Type.LOCAL, "\tLog file initiated.");
 
 
         if (argCount > 2) {
             try {
                 builder.port(Short.valueOf(args[2]));
             } catch (NumberFormatException ex) {
-                Log.log(Level.SEVERE, "Port number was invalid, shutting down.");
+                Log.log(Level.SEVERE, Type.LOCAL, "Port number was invalid, shutting down.");
                 System.exit(-1);
             }
         } else {
-            Log.log(Level.FINE, "Port argument was left empty, defaulting to port 21.");
+            Log.log(Level.FINE, Type.LOCAL, "Port argument was left empty, defaulting to port 21.");
             builder.port((short) 21);
         }
 
-        Log.log(Level.INFO, "Please enter your username: ");
+        Log.log(Level.INFO, Type.LOCAL, "Please enter your username: ");
         String username = scanner.next();
         builder.username(username);
-        Log.log(Level.FINEST, username);
+        Log.log(Level.FINEST, Type.LOCAL, username);
 
-        Log.log(Level.INFO, "Please enter your password: ");
+        Log.log(Level.INFO, Type.LOCAL, "Please enter your password: ");
         String password = scanner.next();
         builder.password(password);
-        Log.log(Level.FINEST, password);
+        Log.log(Level.FINEST, Type.LOCAL, password);
 
         FTPClient client = builder.build();
 

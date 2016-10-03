@@ -2,6 +2,7 @@ package com.aaomidi.ftpclient.engine.command.commands;
 
 import com.aaomidi.ftpclient.engine.FTPClient;
 import com.aaomidi.ftpclient.engine.command.FTPCommand;
+import com.aaomidi.ftpclient.engine.lang.Type;
 import com.aaomidi.ftpclient.util.Log;
 
 import java.util.HashSet;
@@ -23,7 +24,7 @@ public class HelpCommand extends FTPCommand {
     public void execute(String command, List<String> args) {
         Set<FTPCommand> commands = new HashSet<>(client.getCommands().values());
         for (FTPCommand cmd : commands) {
-            Log.log(Level.INFO, "%s -> %s", cmd.getName(), cmd.getHelp());
+            Log.log(Level.INFO, Type.LOCAL, "%s -> %s", cmd.getName(), cmd.getHelp());
         }
     }
 }

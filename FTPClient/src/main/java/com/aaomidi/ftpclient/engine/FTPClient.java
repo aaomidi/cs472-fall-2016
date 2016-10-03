@@ -1,9 +1,8 @@
 package com.aaomidi.ftpclient.engine;
 
 import com.aaomidi.ftpclient.engine.command.FTPCommand;
-import com.aaomidi.ftpclient.engine.command.commands.HelpCommand;
-import com.aaomidi.ftpclient.engine.command.commands.PortCommand;
-import com.aaomidi.ftpclient.engine.command.commands.QuitCommand;
+import com.aaomidi.ftpclient.engine.command.commands.*;
+import com.aaomidi.ftpclient.engine.lang.Type;
 import com.aaomidi.ftpclient.util.Log;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +12,7 @@ import lombok.ToString;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
 @RequiredArgsConstructor
@@ -25,21 +25,29 @@ public class FTPClient {
     @Getter
     private final HashMap<String, FTPCommand> commands = new HashMap<>();
 
+    @Getter
+    private final ReentrantLock dataLock = new ReentrantLock(true);
+    @Getter
+    @Setter
+    private boolean isFileTransfer = false;
 
     private InetAddress inetAddress = null;
-
+    @Getter
     private Socket controlSocket;
 
     @Getter
     @Setter
     private boolean activeMode = false;
-    private ServerSocket activeDataSocket;
+    @Getter
+    private ServerSocket activeDataServerSocket;
+    @Getter
+    private Socket activeDataSocket;
 
     private InputStream controlSocketInputStream;
     private OutputStream controlSocketOutputStream;
 
-    private BufferedReader controlReader;
     private PrintWriter controlWriter;
+
 
     /**
      * Opens a connection to the FTP server.
@@ -50,36 +58,35 @@ public class FTPClient {
     public void connect() throws UnknownHostException, IOException {
         List<String> output;
 
-        Log.log(Level.FINE, "Registering commands.");
+        Log.log(Level.FINE, Type.LOCAL, "Registering commands.");
         this.registerCommands();
-        Log.log(Level.FINE, "\tRegistered.");
+        Log.log(Level.FINE, Type.LOCAL, "\tRegistered.");
 
         inetAddress = InetAddress.getByName(hostname);
 
-        Log.log(Level.FINE, "Creating the connection to the server.");
+        Log.log(Level.FINE, Type.LOCAL, "Creating the connection to the server.");
         createConnection();
-        Log.log(Level.INFO, "\tSuccessfully connected to %s:%d.", hostname, port);
+        Log.log(Level.INFO, Type.LOCAL, "\tSuccessfully connected to %s:%d.", hostname, port);
 
-        Log.log(Level.FINE, "Creating the streams of the control socket.");
+        Log.log(Level.FINE, Type.LOCAL, "Creating the streams of the control socket.");
         controlSocketInputStream = controlSocket.getInputStream();
         controlSocketOutputStream = controlSocket.getOutputStream();
-        Log.log(Level.FINE, "\tSuccessfully created the streams.");
+        Log.log(Level.FINE, Type.LOCAL, "\tSuccessfully created the streams.");
 
-        controlReader = new BufferedReader(new InputStreamReader(controlSocketInputStream));
         controlWriter = new PrintWriter(new OutputStreamWriter(controlSocketOutputStream), true);
 
-        printOutput(getOutput(), Level.INFO);
+        printOutput(getOutput(), Level.INFO, Type.CONTROL);
 
         /* Start Authentication */
-        Log.log(Level.FINE, "Authenticating %s.", username);
+        Log.log(Level.FINE, Type.LOCAL, "Authenticating %s.", username);
 
         writeControl(String.format("USER %s%n", username));
-        printOutput(getOutput(), Level.INFO);
+        printOutput(getOutput(), Level.INFO, Type.CONTROL);
 
         PrintWriter writer;
 
         writeControl(String.format("PASS %s%n", password));
-        printOutput(getOutput(), Level.INFO);
+        printOutput(getOutput(), Level.INFO, Type.CONTROL);
         /* End Authentication */
 
         keepAlive();
@@ -92,8 +99,8 @@ public class FTPClient {
      * @param output The list of strings.
      * @param level  The log level.
      */
-    private void printOutput(List<String> output, Level level) {
-        output.forEach(s -> Log.log(level, s));
+    public void printOutput(List<String> output, Level level, Type type) {
+        output.forEach(s -> Log.log(level, type, s));
     }
 
     /**
@@ -124,9 +131,9 @@ public class FTPClient {
                     FTPCommand cmd = commands.get(split[0]);
 
                     if (cmd == null) {
-                        Log.log(Level.INFO, "Command not recognized.");
+                        Log.log(Level.INFO, Type.LOCAL, "Command not recognized.");
                         writeControl(command);
-                        printOutput(getOutput(), Level.INFO);
+                        printOutput(getOutput(), Level.INFO, Type.CONTROL);
                     } else {
                         cmd.execute(split[0], args);
                     }
@@ -148,12 +155,29 @@ public class FTPClient {
      * @throws IOException
      */
     public void createActiveDataConnection(short port) throws IOException {
-        if (!activeDataSocket.isClosed()) {
+        if (activeDataServerSocket != null && !activeDataServerSocket.isClosed() && activeDataServerSocket.isBound()) {
             throw new IOException("Data connection already exists.");
         }
-        activeDataSocket = new ServerSocket(port);
-        activeDataSocket.setSoTimeout(250);
+        activeDataServerSocket = new ServerSocket(port);
+        activeDataServerSocket.setSoTimeout(250);
         activeMode = true;
+        listenToData();
+    }
+
+    private void listenToData() {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    activeDataSocket = activeDataServerSocket.accept();
+                    printOutput(getSocketOutput(activeDataSocket), Level.INFO, Type.DATA);
+
+                    Thread.sleep(100);
+                } catch (Exception ex) {
+                    continue;
+                }
+            }
+
+        }).start();
     }
 
     /**
@@ -163,12 +187,12 @@ public class FTPClient {
         new Thread(() -> {
             while (true) {
                 try {
-                    Log.log(Level.FINEST, "Sending keep alive.");
+                    Log.log(Level.FINEST, Type.LOCAL, "Sending keep alive.");
                     writeControl("NOOP");
                     getOutput();
                     Thread.sleep(20000);
                 } catch (Exception e) {
-                    Log.log(Level.SEVERE, "ERROR WHEN SENDING KEEP ALIVE.");
+                    Log.log(Level.SEVERE, Type.LOCAL, "ERROR WHEN SENDING KEEP ALIVE.");
                     System.exit(-1);
                 }
             }
@@ -186,8 +210,11 @@ public class FTPClient {
     }
 
     private void registerCommands() {
+        registerCommand(new CdupCommand(this));
         registerCommand(new HelpCommand(this));
+        registerCommand(new ListCommand(this));
         registerCommand(new PortCommand(this));
+        registerCommand(new PwdCommand(this));
         registerCommand(new QuitCommand(this));
     }
 
@@ -207,6 +234,21 @@ public class FTPClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<String> getSocketOutput(Socket socket) throws IOException {
+        List<String> output = new LinkedList<>();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+        try {
+            String msg;
+            while ((msg = reader.readLine()) != null && !msg.equals("")) {
+                output.add(msg);
+            }
+        } catch (SocketTimeoutException ex) {
+            return output;
+        }
+        return output;
     }
 
     @ToString
@@ -257,17 +299,8 @@ public class FTPClient {
      * @return
      * @throws IOException
      */
-    private List<String> getOutput() throws IOException {
-        List<String> output = new LinkedList<>();
-        try {
-            String msg;
-            while ((msg = controlReader.readLine()) != null && !msg.equals("")) {
-                output.add(msg);
-            }
-        } catch (SocketTimeoutException ex) {
-            return output;
-        }
-        return output;
+    public List<String> getOutput() throws IOException {
+        return getSocketOutput(controlSocket);
     }
 
 }
