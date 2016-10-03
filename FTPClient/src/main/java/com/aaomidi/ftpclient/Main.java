@@ -29,13 +29,20 @@ public class Main {
         FTPClient.FTPClientBuilder builder = FTPClient.FTPClientBuilder.builder();
         builder.hostname(args[0]);
 
+        /* Log file stuff */
         File file = new File(args[1]);
         if (file.exists()) {
-            Log.log(Level.INFO, Type.LOCAL, "This file will be over-written. Press any key to continue.");
-            scanner.nextLine();
+            Log.log(Level.INFO, Type.LOCAL, "Log file found. Appending...");
+        } else {
+            Log.log(Level.INFO, Type.LOCAL, "Log file doesn't exist. Creating...");
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                Log.log(Level.SEVERE, Type.LOCAL, "Log file creation failed. Exiting.");
+                System.exit(-1);
+            }
         }
 
-        Log.log(Level.FINE, Type.LOCAL, "Initiating log file.");
         try {
             prepareFile(file);
         } catch (IOException e) {
@@ -44,6 +51,7 @@ public class Main {
             System.exit(-1);
         }
         Log.log(Level.FINE, Type.LOCAL, "\tLog file initiated.");
+        /* End Log file */
 
 
         if (argCount > 2) {
@@ -58,16 +66,13 @@ public class Main {
             builder.port((short) 21);
         }
 
-        Log.log(Level.INFO, Type.LOCAL, "Please enter your username: ");
-        String username = scanner.next();
-        builder.username(username);
-        Log.log(Level.FINEST, Type.LOCAL, username);
-
-        Log.log(Level.INFO, Type.LOCAL, "Please enter your password: ");
-        String password = scanner.next();
-        builder.password(password);
-        Log.log(Level.FINEST, Type.LOCAL, password);
-
+        Log.log(Level.INFO, Type.LOCAL, "Choose a mode:\n\t1. Active\n\t2. Passive");
+        int choice = scanner.nextInt();
+        if (choice == 1) {
+            builder.isActive(true);
+        } else {
+            builder.isActive(false);
+        }
         FTPClient client = builder.build();
 
         try {
@@ -79,13 +84,13 @@ public class Main {
     }
 
     /**
-     * Cleans the log file. Basically overwrites the previous one if it exists.
+     * Append to logfile.
      *
      * @throws IOException
      */
     private static void prepareFile(File logFile) throws IOException {
-        logFile.delete();
-        logFile.createNewFile();
+        //logFile.delete();
+        //logFile.createNewFile();
         Log.addFileHandler(logFile);
     }
 }

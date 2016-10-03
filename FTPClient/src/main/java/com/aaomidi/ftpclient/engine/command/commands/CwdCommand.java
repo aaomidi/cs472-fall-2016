@@ -8,33 +8,28 @@ import com.aaomidi.ftpclient.util.Log;
 import java.util.List;
 import java.util.logging.Level;
 
-public class RetrCommand extends FTPCommand {
-    public RetrCommand(FTPClient client) {
+public class CwdCommand extends FTPCommand {
+    public CwdCommand(FTPClient client) {
         super(
                 client,
-                "Retrieve",
-                "Retrieves a file.",
-                "retr", "download", "get", "iwant", "plzgiveme", "feedme"
+                "ChangeWorkingDirectory",
+                "Changes the working directory. Example: cd /folder/",
+                "cd", "cwd", "goto"
         );
     }
 
     @Override
     public void execute(String cmd, List<String> args) {
-        client.getDataLock().lock();
         if (args.size() == 0) {
-            Log.log(Level.INFO, Type.LOCAL, "Please specify the file you want to get.");
-            client.getDataLock().unlock();
+            Log.log(Level.INFO, Type.LOCAL, "Please specify the folder you want to go to.");
             return;
         }
 
-        client.setFileTransfer(true);
-        client.setFileName(args.get(0));
         try {
-            client.writeControl(String.format("RETR %s", args.get(0)));
+            client.writeControl(String.format("cwd %s", args.get(0)));
             client.printOutput(client.getOutput(), Level.INFO, Type.CONTROL);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        client.getDataLock().unlock();
     }
 }

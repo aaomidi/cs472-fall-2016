@@ -19,29 +19,27 @@ import java.util.logging.Level;
 public class FTPClient {
     private final String hostname;
     private final Short port;
-    private final String username;
-    private final String password;
+    @Getter
+    private final boolean isActiveMode;
 
     @Getter
     private final HashMap<String, FTPCommand> commands = new HashMap<>();
-
     @Getter
+
     private final ReentrantLock dataLock = new ReentrantLock(true);
     @Getter
     @Setter
-    private boolean isFileTransfer = false;
+    private boolean fileTransfer = false;
+    @Getter
+    @Setter
+    private String fileName;
 
     private InetAddress inetAddress = null;
     @Getter
     private Socket controlSocket;
 
     @Getter
-    @Setter
-    private boolean activeMode = false;
-    @Getter
     private ServerSocket activeDataServerSocket;
-    @Getter
-    private Socket activeDataSocket;
 
     private InputStream controlSocketInputStream;
     private OutputStream controlSocketOutputStream;
@@ -76,19 +74,6 @@ public class FTPClient {
         controlWriter = new PrintWriter(new OutputStreamWriter(controlSocketOutputStream), true);
 
         printOutput(getOutput(), Level.INFO, Type.CONTROL);
-
-        /* Start Authentication */
-        Log.log(Level.FINE, Type.LOCAL, "Authenticating %s.", username);
-
-        writeControl(String.format("USER %s%n", username));
-        printOutput(getOutput(), Level.INFO, Type.CONTROL);
-
-        PrintWriter writer;
-
-        writeControl(String.format("PASS %s%n", password));
-        printOutput(getOutput(), Level.INFO, Type.CONTROL);
-        /* End Authentication */
-
         keepAlive();
 
     }
@@ -118,7 +103,7 @@ public class FTPClient {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             try {
-                String command = scanner.nextLine().toLowerCase();
+                String command = scanner.nextLine();
                 if (!command.equals("")) {
                     String[] split = command.split(" ");
                     List<String> args = new ArrayList<>(split.length - 1);
@@ -128,7 +113,7 @@ public class FTPClient {
                         args.add(s);
                     }
 
-                    FTPCommand cmd = commands.get(split[0]);
+                    FTPCommand cmd = commands.get(split[0].toLowerCase());
 
                     if (cmd == null) {
                         Log.log(Level.INFO, Type.LOCAL, "Command not recognized.");
@@ -158,9 +143,9 @@ public class FTPClient {
         if (activeDataServerSocket != null && !activeDataServerSocket.isClosed() && activeDataServerSocket.isBound()) {
             throw new IOException("Data connection already exists.");
         }
+
         activeDataServerSocket = new ServerSocket(port);
-        activeDataServerSocket.setSoTimeout(250);
-        activeMode = true;
+        activeDataServerSocket.setSoTimeout(1100);
         listenToData();
     }
 
@@ -168,13 +153,51 @@ public class FTPClient {
         new Thread(() -> {
             while (true) {
                 try {
-                    activeDataSocket = activeDataServerSocket.accept();
-                    printOutput(getSocketOutput(activeDataSocket), Level.INFO, Type.DATA);
+                    dataLock.lock();
 
-                    Thread.sleep(100);
+                    if (activeDataServerSocket.isClosed()) {
+                        dataLock.unlock();
+                        Thread.sleep(1000);
+                        continue;
+                    }
+
+                    Socket activeDataSocket = activeDataServerSocket.accept();
+
+                    if (isFileTransfer()) {
+                        setFileTransfer(false);
+
+                        Log.log(Level.INFO, Type.DATA, "Transferring file %s.", fileName);
+                        InputStream inputStream = activeDataSocket.getInputStream();
+                        File result = new File(fileName);
+                        result.createNewFile();
+                        OutputStream outputStream = new FileOutputStream(result);
+
+                        int read = 0;
+                        byte[] bytes = new byte[1024];
+
+                        while ((read = inputStream.read(bytes)) != -1) {
+                            outputStream.write(bytes, 0, read);
+                        }
+                        outputStream.flush();
+                        outputStream.close();
+
+                        Log.log(Level.INFO, Type.DATA, "\tTransfer of %s completed.", fileName);
+                    } else {
+                        printOutput(getSocketOutput(activeDataSocket), Level.INFO, Type.DATA);
+                    }
+                    activeDataServerSocket.close();
+                    dataLock.unlock();
+                    Thread.sleep(1000);
                 } catch (Exception ex) {
                     continue;
+                } finally {
+                    try {
+                        dataLock.unlock();
+                    } catch (Exception ex) {
+                        //ignore
+                    }
                 }
+
             }
 
         }).start();
@@ -211,11 +234,14 @@ public class FTPClient {
 
     private void registerCommands() {
         registerCommand(new CdupCommand(this));
+        registerCommand(new CwdCommand(this));
         registerCommand(new HelpCommand(this));
         registerCommand(new ListCommand(this));
+        registerCommand(new LoginCommand(this));
         registerCommand(new PortCommand(this));
         registerCommand(new PwdCommand(this));
         registerCommand(new QuitCommand(this));
+        registerCommand(new RetrCommand(this));
     }
 
     private void registerCommand(FTPCommand command) {
@@ -255,9 +281,7 @@ public class FTPClient {
     public static class FTPClientBuilder {
         private String hostname;
         private short port;
-
-        private String username;
-        private String password;
+        private boolean isActive;
 
         public static FTPClientBuilder builder() {
             return new FTPClientBuilder();
@@ -277,19 +301,13 @@ public class FTPClient {
             return this;
         }
 
-
-        public FTPClientBuilder username(String username) {
-            this.username = username;
-            return this;
-        }
-
-        public FTPClientBuilder password(String password) {
-            this.password = password;
+        public FTPClientBuilder isActive(boolean x) {
+            this.isActive = x;
             return this;
         }
 
         public FTPClient build() {
-            return new FTPClient(hostname, port, username, password);
+            return new FTPClient(hostname, port, isActive);
         }
     }
 
