@@ -12,7 +12,7 @@ public class QuitCommand extends FTPCommand {
                 client,
                 "Quit",
                 "Destroys the FTP connection and stops all communications between you and the server",
-                "q", "leave", "kill", "die", "suicide"
+                "q", "leave", "kill", "die", "dietbh", "suicide"
         );
     }
 
