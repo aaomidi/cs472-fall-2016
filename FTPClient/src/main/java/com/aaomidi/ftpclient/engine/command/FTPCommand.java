@@ -3,6 +3,8 @@ package com.aaomidi.ftpclient.engine.command;
 import com.aaomidi.ftpclient.engine.FTPClient;
 import lombok.Getter;
 
+import java.util.List;
+
 public abstract class FTPCommand {
     protected final FTPClient client;
     @Getter
@@ -22,5 +24,5 @@ public abstract class FTPCommand {
     /**
      * Execute the command.
      */
-    public abstract void execute();
+    public abstract void execute(String cmd, List<String> args);
 }

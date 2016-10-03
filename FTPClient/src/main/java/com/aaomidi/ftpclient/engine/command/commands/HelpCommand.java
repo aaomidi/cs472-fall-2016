@@ -4,6 +4,9 @@ import com.aaomidi.ftpclient.engine.FTPClient;
 import com.aaomidi.ftpclient.engine.command.FTPCommand;
 import com.aaomidi.ftpclient.util.Log;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class HelpCommand extends FTPCommand {
@@ -17,8 +20,9 @@ public class HelpCommand extends FTPCommand {
     }
 
     @Override
-    public void execute() {
-        for (FTPCommand cmd : client.getCommands().values()) {
+    public void execute(String command, List<String> args) {
+        Set<FTPCommand> commands = new HashSet<>(client.getCommands().values());
+        for (FTPCommand cmd : commands) {
             Log.log(Level.INFO, "%s -> %s", cmd.getName(), cmd.getHelp());
         }
     }

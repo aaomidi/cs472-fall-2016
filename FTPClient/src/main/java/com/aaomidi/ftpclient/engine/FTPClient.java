@@ -1,21 +1,18 @@
 package com.aaomidi.ftpclient.engine;
 
 import com.aaomidi.ftpclient.engine.command.FTPCommand;
+import com.aaomidi.ftpclient.engine.command.commands.HelpCommand;
+import com.aaomidi.ftpclient.engine.command.commands.PortCommand;
 import com.aaomidi.ftpclient.engine.command.commands.QuitCommand;
 import com.aaomidi.ftpclient.util.Log;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.net.*;
+import java.util.*;
 import java.util.logging.Level;
 
 @RequiredArgsConstructor
@@ -28,9 +25,15 @@ public class FTPClient {
     @Getter
     private final HashMap<String, FTPCommand> commands = new HashMap<>();
 
+
     private InetAddress inetAddress = null;
 
     private Socket controlSocket;
+
+    @Getter
+    @Setter
+    private boolean activeMode = false;
+    private ServerSocket activeDataSocket;
 
     private InputStream controlSocketInputStream;
     private OutputStream controlSocketOutputStream;
@@ -100,7 +103,7 @@ public class FTPClient {
      * @param msg Message to write.
      * @throws IOException
      */
-    private void writeControl(String msg) throws IOException {
+    public void writeControl(String msg) throws IOException {
         controlWriter.println(msg);
     }
 
@@ -109,12 +112,25 @@ public class FTPClient {
         while (true) {
             try {
                 String command = scanner.nextLine().toLowerCase();
-                FTPCommand cmd = commands.get(command);
-                if (cmd == null) {
-                    Log.log(Level.INFO, "Command not recognized.");
-                    break;
+                if (!command.equals("")) {
+                    String[] split = command.split(" ");
+                    List<String> args = new ArrayList<>(split.length - 1);
+
+                    for (int i = 1; i < split.length; i++) {
+                        String s = split[i];
+                        args.add(s);
+                    }
+
+                    FTPCommand cmd = commands.get(split[0]);
+
+                    if (cmd == null) {
+                        Log.log(Level.INFO, "Command not recognized.");
+                        writeControl(command);
+                        printOutput(getOutput(), Level.INFO);
+                    } else {
+                        cmd.execute(split[0], args);
+                    }
                 }
-                cmd.execute();
 
                 Thread.sleep(100);
             } catch (InterruptedException ex) {
@@ -123,6 +139,21 @@ public class FTPClient {
                 ex.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Creates an active data connection at a specific port
+     *
+     * @param port
+     * @throws IOException
+     */
+    public void createActiveDataConnection(short port) throws IOException {
+        if (!activeDataSocket.isClosed()) {
+            throw new IOException("Data connection already exists.");
+        }
+        activeDataSocket = new ServerSocket(port);
+        activeDataSocket.setSoTimeout(250);
+        activeMode = true;
     }
 
     /**
@@ -151,10 +182,12 @@ public class FTPClient {
      */
     private void createConnection() throws IOException {
         controlSocket = new Socket(inetAddress, port);
-        controlSocket.setSoTimeout(150);
+        controlSocket.setSoTimeout(250);
     }
 
     private void registerCommands() {
+        registerCommand(new HelpCommand(this));
+        registerCommand(new PortCommand(this));
         registerCommand(new QuitCommand(this));
     }
 
@@ -165,6 +198,9 @@ public class FTPClient {
         this.commands.put(command.getName().toLowerCase(), command);
     }
 
+    /**
+     * Closes all FTP related connections.
+     */
     public void close() {
         try {
             controlSocket.close();
