@@ -13,7 +13,7 @@ public class PwdCommand extends FTPCommand {
     public PwdCommand(FTPClient client) {
         super(
                 client,
-                "PrintWorkingDirectory",
+                "pwd",
                 "Prints the current working directory of the server.",
                 "pwd"
         );

@@ -66,12 +66,14 @@ public class Main {
             builder.port((short) 21);
         }
 
-        Log.log(Level.INFO, Type.LOCAL, "Choose a mode:\n\t1. Active\n\t2. Passive");
+        Log.log(Level.INFO, Type.LOCAL, "Choose a mode:\n\t1. Active\n\t2. Passive\n\t3. Extended Active\n\t4. Extended Passive");
         int choice = scanner.nextInt();
-        if (choice == 1) {
-            builder.isActive(true);
-        } else {
-            builder.isActive(false);
+        switch (choice) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            default:
         }
         FTPClient client = builder.build();
 

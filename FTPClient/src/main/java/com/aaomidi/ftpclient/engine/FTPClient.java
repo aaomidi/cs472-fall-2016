@@ -2,6 +2,8 @@ package com.aaomidi.ftpclient.engine;
 
 import com.aaomidi.ftpclient.engine.command.FTPCommand;
 import com.aaomidi.ftpclient.engine.command.commands.*;
+import com.aaomidi.ftpclient.engine.lang.FTPRegex;
+import com.aaomidi.ftpclient.engine.lang.StatusCodes;
 import com.aaomidi.ftpclient.engine.lang.Type;
 import com.aaomidi.ftpclient.util.Log;
 import lombok.Getter;
@@ -14,13 +16,14 @@ import java.net.*;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
 
 @RequiredArgsConstructor
 public class FTPClient {
     private final String hostname;
     private final Short port;
     @Getter
-    private final boolean isActiveMode;
+    private final FTPMode mode;
 
     @Getter
     private final HashMap<String, FTPCommand> commands = new HashMap<>();
@@ -37,6 +40,8 @@ public class FTPClient {
     private InetAddress inetAddress = null;
     @Getter
     private Socket controlSocket;
+    @Getter
+    private Socket passiveSocket;
 
     @Getter
     private ServerSocket activeDataServerSocket;
@@ -73,7 +78,8 @@ public class FTPClient {
 
         controlWriter = new PrintWriter(new OutputStreamWriter(controlSocketOutputStream), true);
 
-        printOutput(getOutput(), Level.INFO, Type.CONTROL);
+        printOutput(getSocketOutput(controlSocket, Integer.MAX_VALUE), Level.INFO, Type.CONTROL);
+        Log.log(Level.INFO, Type.LOCAL, "You've connected to the server. Type 'help' to see all the commands you can do, or do login to start logging in.");
         keepAlive();
 
     }
@@ -121,6 +127,9 @@ public class FTPClient {
                         printOutput(getOutput(), Level.INFO, Type.CONTROL);
                     } else {
                         cmd.execute(split[0], args);
+                        if (cmd.getName().equalsIgnoreCase("quit")) {
+                            return;
+                        }
                     }
                 }
 
@@ -133,6 +142,47 @@ public class FTPClient {
         }
     }
 
+    public void createPassiveDataConnection() throws IOException {
+        /*
+         * Grammar:
+         * PASV <CRLF>
+         */
+
+        String command = "PASV";
+        writeControl(command);
+
+        List<String> output = getOutput();
+        String line = output.get(0);
+        if (line == null) {
+            Log.log(Level.SEVERE, Type.LOCAL, "Can not enter passive mode.");
+            return;
+        }
+
+        int statusCode = StatusCodes.getStatusCodeFromString(line);
+
+        if (statusCode != 227) {
+            Log.log(Level.SEVERE, Type.LOCAL, "Can not enter passive mode.");
+            return;
+        }
+
+        Log.log(Level.FINEST, Type.LOCAL, "Response from server: " + line);
+
+        Matcher matcher = FTPRegex.PASSIVE_PORT.matcher(line);
+        if (!matcher.matches()) {
+            return;
+        }
+        int port;
+        try {
+            port = Short.valueOf(matcher.group(5)) * 256 + Short.valueOf(matcher.group(6));
+        } catch (Exception ex) {
+            Log.log(Level.SEVERE, Type.LOCAL, "Issue with response from the server.");
+            return;
+        }
+
+        passiveSocket = new Socket(controlSocket.getInetAddress(), port);
+        listenToData();
+    }
+
     /**
      * Creates an active data connection at a specific port
      *
@@ -140,66 +190,98 @@ public class FTPClient {
      * @throws IOException
      */
     public void createActiveDataConnection(short port) throws IOException {
-        if (activeDataServerSocket != null && !activeDataServerSocket.isClosed() && activeDataServerSocket.isBound()) {
-            throw new IOException("Data connection already exists.");
+        /*
+         * Grammar:
+         * PORT <host1>,<host2>,<host3>,<host4>,<port1>,<port2>
+         * Where each argument is 8 bits
+         */
+
+        if (port < 0) {
+            Log.log(Level.FINE, Type.LOCAL, "A port less than 0 was entered. We're just going to assume 0 was meant and go along with that.");
+            port = 0;
         }
 
         activeDataServerSocket = new ServerSocket(port);
-        activeDataServerSocket.setSoTimeout(1100);
+        activeDataServerSocket.setSoTimeout(250);
         listenToData();
+
+        Socket clientSocket = this.getControlSocket();
+        ServerSocket serverSocket = this.getActiveDataServerSocket();
+        byte[] addr = clientSocket.getLocalAddress().getAddress();
+
+        String command = String.format("PORT %d,%d,%d,%d,%d,%d",
+                (int) addr[0] & 0xFF,
+                (int) addr[1] & 0xFF,
+                (int) addr[2] & 0xFF,
+                (int) addr[3] & 0xFF,
+                serverSocket.getLocalPort() / 256,
+                serverSocket.getLocalPort() % 256);
+
+        Log.log(Level.FINER, Type.LOCAL, command);
+
+        this.writeControl(command);
+        this.printOutput(this.getOutput(), Level.INFO, Type.CONTROL);
     }
 
     private void listenToData() {
         new Thread(() -> {
-            while (true) {
-                try {
-                    dataLock.lock();
-
-                    if (activeDataServerSocket.isClosed()) {
-                        dataLock.unlock();
-                        Thread.sleep(1000);
-                        continue;
-                    }
-
-                    Socket activeDataSocket = activeDataServerSocket.accept();
-
-                    if (isFileTransfer()) {
-                        setFileTransfer(false);
-
-                        Log.log(Level.INFO, Type.DATA, "Transferring file %s.", fileName);
-                        InputStream inputStream = activeDataSocket.getInputStream();
-                        File result = new File(fileName);
-                        result.createNewFile();
-                        OutputStream outputStream = new FileOutputStream(result);
-
-                        int read = 0;
-                        byte[] bytes = new byte[1024];
-
-                        while ((read = inputStream.read(bytes)) != -1) {
-                            outputStream.write(bytes, 0, read);
+            try {
+                Log.log(Level.INFO, Type.DATA, "Called.");
+                dataLock.lock();
+                Log.log(Level.INFO, Type.DATA, "Called2.");
+                Socket dataSocket = null;
+                switch (mode) {
+                    case ACTIVE: {
+                        if (activeDataServerSocket.isClosed()) {
+                            dataLock.unlock();
+                            return;
                         }
-                        outputStream.flush();
-                        outputStream.close();
+                        dataSocket = activeDataServerSocket.accept();
 
-                        Log.log(Level.INFO, Type.DATA, "\tTransfer of %s completed.", fileName);
-                    } else {
-                        printOutput(getSocketOutput(activeDataSocket), Level.INFO, Type.DATA);
+                        break;
                     }
-                    activeDataServerSocket.close();
-                    dataLock.unlock();
-                    Thread.sleep(1000);
-                } catch (Exception ex) {
-                    continue;
-                } finally {
-                    try {
-                        dataLock.unlock();
-                    } catch (Exception ex) {
-                        //ignore
+                    case PASSIVE: {
+                        dataSocket = passiveSocket;
+
+                        break;
                     }
+
                 }
 
-            }
+                if (isFileTransfer()) {
+                    Log.log(Level.INFO, Type.DATA, "Called3.");
+                    setFileTransfer(false);
 
+                    Log.log(Level.INFO, Type.DATA, "Transferring file %s.", fileName);
+                    InputStream inputStream = dataSocket.getInputStream();
+                    File result = new File(fileName);
+                    result.createNewFile();
+                    OutputStream outputStream = new FileOutputStream(result);
+
+                    int read = 0;
+                    byte[] bytes = new byte[1024];
+
+                    while ((read = inputStream.read(bytes)) != -1) {
+                        outputStream.write(bytes, 0, read);
+                    }
+                    outputStream.flush();
+                    outputStream.close();
+
+                    Log.log(Level.INFO, Type.DATA, "\tTransfer of %s completed.", fileName);
+                } else {
+                    printOutput(getSocketOutput(dataSocket, Integer.MAX_VALUE), Level.INFO, Type.DATA);
+                }
+                activeDataServerSocket.close();
+                dataLock.unlock();
+            } catch (Exception ex) {
+                return;
+            } finally {
+                try {
+                    dataLock.unlock();
+                } catch (Exception ex) {
+                    //ignore
+                }
+            }
         }).start();
     }
 
@@ -233,15 +315,14 @@ public class FTPClient {
     }
 
     private void registerCommands() {
-        registerCommand(new CdupCommand(this));
-        registerCommand(new CwdCommand(this));
+        registerCommand(new HomeCommand(this));
+        registerCommand(new CdCommand(this));
         registerCommand(new HelpCommand(this));
-        registerCommand(new ListCommand(this));
+        registerCommand(new LsCommand(this));
         registerCommand(new LoginCommand(this));
-        registerCommand(new PortCommand(this));
         registerCommand(new PwdCommand(this));
         registerCommand(new QuitCommand(this));
-        registerCommand(new RetrCommand(this));
+        registerCommand(new GetCommand(this));
     }
 
     private void registerCommand(FTPCommand command) {
@@ -262,15 +343,21 @@ public class FTPClient {
         }
     }
 
-    public List<String> getSocketOutput(Socket socket) throws IOException {
+    public List<String> getSocketOutput(Socket socket, int count) throws IOException {
         List<String> output = new LinkedList<>();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        InputStream is = socket.getInputStream();
 
         try {
             String msg;
-            while ((msg = reader.readLine()) != null && !msg.equals("")) {
+            byte[] buffer = new byte[1024];
+            int read;
+            int i = 0;
+            while ((read = is.read(buffer)) > 0 && i++ != count) {
+                msg = new String(buffer, 0, read);
                 output.add(msg);
             }
+
+            Log.log(Level.FINE, Type.LOCAL, "Socket disconnected.");
         } catch (SocketTimeoutException ex) {
             return output;
         }
@@ -278,27 +365,40 @@ public class FTPClient {
     }
 
     public void prepareConnection() throws IOException {
-        if (activeDataServerSocket != null && !activeDataServerSocket.isClosed())
-            return;
-        if (isActiveMode()) {
-            commands.get("port").execute("", new LinkedList<>());
-        } else {
-            // Do nothing for now
+        switch (this.mode) {
+            case ACTIVE:
+                this.createActiveDataConnection((short) 0);
+                break;
+            case PASSIVE:
+                this.createPassiveDataConnection();
+                break;
+            case EACTIVE:
+            case EPASSIVE:
         }
+    }
+
+    /**
+     * Gets a list of strings as output.
+     *
+     * @return
+     * @throws IOException
+     */
+    public List<String> getOutput() throws IOException {
+        return getSocketOutput(controlSocket, 1);
     }
 
     @ToString
     public static class FTPClientBuilder {
         private String hostname;
         private short port;
-        private boolean isActive;
-
-        public static FTPClientBuilder builder() {
-            return new FTPClientBuilder();
-        }
+        private FTPMode mode;
 
         public FTPClientBuilder() {
 
+        }
+
+        public static FTPClientBuilder builder() {
+            return new FTPClientBuilder();
         }
 
         public FTPClientBuilder hostname(String hostname) {
@@ -311,24 +411,14 @@ public class FTPClient {
             return this;
         }
 
-        public FTPClientBuilder isActive(boolean x) {
-            this.isActive = x;
+        public FTPClientBuilder setMode(FTPMode mode) {
+            this.mode = mode;
             return this;
         }
 
         public FTPClient build() {
-            return new FTPClient(hostname, port, isActive);
+            return new FTPClient(hostname, port, mode);
         }
-    }
-
-    /**
-     * Gets a list of strings as output.
-     *
-     * @return
-     * @throws IOException
-     */
-    public List<String> getOutput() throws IOException {
-        return getSocketOutput(controlSocket);
     }
 
 }

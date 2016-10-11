@@ -14,7 +14,7 @@ public class HelpCommand extends FTPCommand {
     public HelpCommand(FTPClient client) {
         super(
                 client,
-                "Help",
+                "help",
                 "Displays information about the commands and what actions they preform.",
                 "h", "?", "whatisdis", "wot", "?", "helpme", "plz", "tfw", "newnumberwhodis?"
         );
@@ -24,6 +24,7 @@ public class HelpCommand extends FTPCommand {
     public void execute(String command, List<String> args) {
         Set<FTPCommand> commands = new HashSet<>(client.getCommands().values());
         for (FTPCommand cmd : commands) {
+            if (cmd.isHidden()) return;
             Log.log(Level.INFO, Type.LOCAL, "%s -> %s", cmd.getName(), cmd.getHelp());
         }
     }

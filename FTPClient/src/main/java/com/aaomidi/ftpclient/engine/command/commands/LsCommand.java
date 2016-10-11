@@ -9,24 +9,28 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 
-public class CdupCommand extends FTPCommand {
-    public CdupCommand(FTPClient client) {
+public class LsCommand extends FTPCommand {
+    public LsCommand(FTPClient client) {
         super(
                 client,
-                "ChangeToParentDirectory",
-                "Changes the directory to the home directory.",
-                "cdup", "home", "parent"
+                "ls",
+                "Prints list of files.",
+                "ls", "show"
         );
     }
 
     @Override
     public void execute(String cmd, List<String> args) {
         try {
-            client.writeControl("cdup");
+            client.getDataLock().lock();
+            client.prepareConnection();
+            client.writeControl("list");
             client.printOutput(client.getOutput(), Level.INFO, Type.CONTROL);
         } catch (IOException e) {
             Log.log(Level.SEVERE, Type.LOCAL, "Error when writing/reading to/from control in port.");
             e.printStackTrace();
+        }finally {
+            client.getDataLock().unlock();
         }
     }
 }

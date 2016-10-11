@@ -48,6 +48,14 @@ public class Log {
     private static void writeToFile() {
         new Thread(() -> {
             while (true) {
+                if(logMessages.isEmpty()){
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    continue;
+                }
                 for (File file : files) {
                     try {
                         FileWriter writer = new FileWriter(file, true);
