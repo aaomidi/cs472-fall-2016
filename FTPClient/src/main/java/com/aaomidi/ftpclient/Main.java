@@ -1,6 +1,7 @@
 package com.aaomidi.ftpclient;
 
 import com.aaomidi.ftpclient.engine.FTPClient;
+import com.aaomidi.ftpclient.engine.FTPMode;
 import com.aaomidi.ftpclient.engine.lang.Type;
 import com.aaomidi.ftpclient.util.Log;
 
@@ -70,9 +71,17 @@ public class Main {
         int choice = scanner.nextInt();
         switch (choice) {
             case 1:
+                builder.setMode(FTPMode.ACTIVE);
+                break;
             case 2:
+                builder.setMode(FTPMode.PASSIVE);
+                break;
             case 3:
+                builder.setMode(FTPMode.EACTIVE);
+                break;
             case 4:
+                builder.setMode(FTPMode.EPASSIVE);
+                break;
             default:
         }
         FTPClient client = builder.build();

@@ -231,6 +231,7 @@ public class FTPClient {
                 Log.log(Level.INFO, Type.DATA, "Called2.");
                 Socket dataSocket = null;
                 switch (mode) {
+                    case EACTIVE:
                     case ACTIVE: {
                         if (activeDataServerSocket.isClosed()) {
                             dataLock.unlock();
@@ -240,6 +241,7 @@ public class FTPClient {
 
                         break;
                     }
+                    case EPASSIVE:
                     case PASSIVE: {
                         dataSocket = passiveSocket;
 
@@ -292,7 +294,7 @@ public class FTPClient {
         new Thread(() -> {
             while (true) {
                 try {
-                    Log.log(Level.FINEST, Type.LOCAL, "Sending keep alive.");
+                    //Log.log(Level.FINEST, Type.LOCAL, "Sending keep alive.");
                     writeControl("NOOP");
                     getOutput();
                     Thread.sleep(20000);
@@ -364,6 +366,80 @@ public class FTPClient {
         return output;
     }
 
+    public void createExtendedActiveDataConnection(short port) throws IOException {
+
+        if (port < 0) {
+            Log.log(Level.FINE, Type.LOCAL, "A port less than 0 was entered. We're just going to assume 0 was meant and go along with that.");
+            port = 0;
+        }
+
+        activeDataServerSocket = new ServerSocket(port);
+        activeDataServerSocket.setSoTimeout(250);
+        listenToData();
+
+        Socket clientSocket = this.getControlSocket();
+        ServerSocket serverSocket = this.getActiveDataServerSocket();
+        InetAddress addr = clientSocket.getLocalAddress();
+
+        int ip = 1;
+        if (clientSocket.getInetAddress() instanceof Inet6Address) {
+            ip = 2;
+        }
+
+        String command = String.format("EPRT |%d|%s|%d|",
+                ip,
+                addr.getHostAddress(),
+                serverSocket.getLocalPort());
+
+        Log.log(Level.FINER, Type.LOCAL, command);
+
+        this.writeControl(command);
+        this.printOutput(this.getOutput(), Level.INFO, Type.CONTROL);
+    }
+
+    public void createExtendedPassiveDataConnection() throws IOException {
+        /*
+         * Grammar:
+         * EPSV <CRLF>
+         */
+
+        String command = "EPSV 2";
+        writeControl(command);
+
+        List<String> output = getOutput();
+        //printOutput(output, Level.FINER, Type.CONTROL);
+        String line = output.get(0);
+        if (line == null) {
+            Log.log(Level.SEVERE, Type.LOCAL, "Can not enter passive mode.");
+            return;
+        }
+
+        int statusCode = StatusCodes.getStatusCodeFromString(line);
+
+        if (statusCode != 229) {
+            Log.log(Level.SEVERE, Type.LOCAL, "Can not enter passive mode.");
+            return;
+        }
+
+        Log.log(Level.FINEST, Type.LOCAL, "Response from server: " + line);
+
+        Matcher matcher = FTPRegex.EPASSIVE_PORT.matcher(line);
+        if (!matcher.find()) {
+            System.out.println("Matcher didn't match.");
+            return;
+        }
+        int port;
+        try {
+            port = Integer.valueOf(matcher.group(1));
+        } catch (NumberFormatException ex) {
+            Log.log(Level.SEVERE, Type.LOCAL, "Issue with response from the server.");
+            return;
+        }
+
+        passiveSocket = new Socket(controlSocket.getInetAddress(), port);
+        listenToData();
+    }
+
     public void prepareConnection() throws IOException {
         switch (this.mode) {
             case ACTIVE:
@@ -373,18 +449,12 @@ public class FTPClient {
                 this.createPassiveDataConnection();
                 break;
             case EACTIVE:
+                this.createExtendedActiveDataConnection((short) 0);
+                break;
             case EPASSIVE:
+                this.createExtendedPassiveDataConnection();
+                break;
         }
-    }
-
-    /**
-     * Gets a list of strings as output.
-     *
-     * @return
-     * @throws IOException
-     */
-    public List<String> getOutput() throws IOException {
-        return getSocketOutput(controlSocket, 1);
     }
 
     @ToString
@@ -393,12 +463,12 @@ public class FTPClient {
         private short port;
         private FTPMode mode;
 
-        public FTPClientBuilder() {
-
-        }
-
         public static FTPClientBuilder builder() {
             return new FTPClientBuilder();
+        }
+
+        public FTPClientBuilder() {
+
         }
 
         public FTPClientBuilder hostname(String hostname) {
@@ -411,14 +481,24 @@ public class FTPClient {
             return this;
         }
 
+        public FTPClient build() {
+            return new FTPClient(hostname, port, mode);
+        }
+
         public FTPClientBuilder setMode(FTPMode mode) {
             this.mode = mode;
             return this;
         }
+    }
 
-        public FTPClient build() {
-            return new FTPClient(hostname, port, mode);
-        }
+    /**
+     * Gets a list of strings as output.
+     *
+     * @return
+     * @throws IOException
+     */
+    public List<String> getOutput() throws IOException {
+        return getSocketOutput(controlSocket, 1);
     }
 
 }
