@@ -105,6 +105,9 @@ public class FTPClient {
         controlWriter.println(msg);
     }
 
+    /**
+     * Method that blocks the thread and starts a connection.
+     */
     public void start() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -123,8 +126,6 @@ public class FTPClient {
 
                     if (cmd == null) {
                         Log.log(Level.INFO, Type.LOCAL, "Command not recognized.");
-                        writeControl(command);
-                        printOutput(getOutput(), Level.INFO, Type.CONTROL);
                     } else {
                         cmd.execute(split[0], args);
                         if (cmd.getName().equalsIgnoreCase("quit")) {
@@ -142,6 +143,10 @@ public class FTPClient {
         }
     }
 
+    /**
+     * Creates a PASV connection to server.
+     * @throws IOException
+     */
     public void createPassiveDataConnection() throws IOException {
         /*
          * Grammar:
@@ -223,6 +228,9 @@ public class FTPClient {
         this.printOutput(this.getOutput(), Level.INFO, Type.CONTROL);
     }
 
+    /**
+     * Call when expecting a data connection. It locks and unlocks a reentrantLock lock.
+     */
     private void listenToData() {
         new Thread(() -> {
             try {
@@ -236,7 +244,12 @@ public class FTPClient {
                             return;
                         }
                         dataSocket = activeDataServerSocket.accept();
-
+                        // Is someone else trying to connect to our server?!!
+                        if (!dataSocket.getInetAddress().equals(controlSocket.getInetAddress())) {
+                            dataLock.unlock();
+                            Log.log(Level.SEVERE, Type.LOCAL, "UNKNOWN CONNECTION. Possible hack attempt blocked.");
+                            return;
+                        }
                         break;
                     }
                     case EPASSIVE:
@@ -313,6 +326,9 @@ public class FTPClient {
         controlSocket.setSoTimeout(250);
     }
 
+    /**
+     * Register our commands.
+     */
     private void registerCommands() {
         registerCommand(new HomeCommand(this));
         registerCommand(new CdCommand(this));
@@ -324,6 +340,10 @@ public class FTPClient {
         registerCommand(new GetCommand(this));
     }
 
+    /**
+     * Registers a specific command. Registers its aliases for faster lookup.
+     * @param command
+     */
     private void registerCommand(FTPCommand command) {
         for (String s : command.getAliases()) {
             this.commands.put(s.toLowerCase(), command);
@@ -342,6 +362,14 @@ public class FTPClient {
         }
     }
 
+    /**
+     * Gets the output from a socket with a line count if applicable.
+     *
+     * @param socket
+     * @param count
+     * @return
+     * @throws IOException
+     */
     public List<String> getSocketOutput(Socket socket, int count) throws IOException {
         List<String> output = new LinkedList<>();
         InputStream is = socket.getInputStream();
@@ -363,6 +391,11 @@ public class FTPClient {
         return output;
     }
 
+    /**
+     * Prepares EPRT connection.
+     * @param port
+     * @throws IOException
+     */
     public void createExtendedActiveDataConnection(short port) throws IOException {
 
         if (port < 0) {
@@ -394,6 +427,10 @@ public class FTPClient {
         this.printOutput(this.getOutput(), Level.INFO, Type.CONTROL);
     }
 
+    /**
+     * Prepares EPSV connection.
+     * @throws IOException
+     */
     public void createExtendedPassiveDataConnection() throws IOException {
         /*
          * Grammar:
@@ -437,6 +474,10 @@ public class FTPClient {
         listenToData();
     }
 
+    /**
+     * Prepares the data connection depending on the mode we're in.
+     * @throws IOException
+     */
     public void prepareConnection() throws IOException {
         switch (this.mode) {
             case ACTIVE:

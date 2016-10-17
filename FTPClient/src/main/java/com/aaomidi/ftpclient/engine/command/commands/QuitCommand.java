@@ -15,7 +15,7 @@ public class QuitCommand extends FTPCommand {
                 "quit",
                 "Destroys the FTP connection and stops all communications between you and the server",
                 // Yes I'm bored and I'm writing silly aliases
-                "q", ":q", ":q!", "leave", "kill", "die", "dietbh", "suicide", "pullthetrigger", "kickawaythestool"
+                "exit", "q", ":q", ":q!", "leave", "kill", "die", "dietbh", "suicide", "pullthetrigger", "kickawaythestool"
         );
     }
 

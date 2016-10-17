@@ -36,7 +36,12 @@ All commands required from us are implemented. These commands are:
 Most of the errors are handled using the `lang` package.
 
 ### Sample run:
-The sample run is contained in `logfile.log`.
+The sample run is contained in `log.log`.
 
 ### Questions:
 The questions are located in `questions.md`
+
+### How to run:
+This program uses Maven. Simply type in `mvn clean package`. Go to the jar folder it created and do `java -jar FTPClient.jar hostname logfile port`.
+
+If you try to run this in an IDE, please make sure you have the lombok plugin for your IDE or errors are going to show up everywhere!
