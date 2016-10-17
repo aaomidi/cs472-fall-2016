@@ -1,0 +1,299 @@
+2016-10-17 14:02:15 EDT - INFO - LOCAL - Welcome to Amir's FTP Client!
+2016-10-17 14:02:15 EDT - INFO - LOCAL - Log file doesn't exist. Creating...
+2016-10-17 14:02:15 EDT - FINE - LOCAL - 	Log file initiated.
+2016-10-17 14:02:15 EDT - FINE - LOCAL - Port argument was left empty, defaulting to port 21.
+2016-10-17 14:02:15 EDT - INFO - LOCAL - Choose a mode:
+	1. Active
+	2. Passive
+	3. Extended Active
+	4. Extended Passive
+2016-10-17 14:02:18 EDT - INFO - LOCAL - Alright, selecting active mode.
+2016-10-17 14:02:18 EDT - FINE - LOCAL - Registering commands.
+2016-10-17 14:02:18 EDT - FINE - LOCAL - 	Registered.
+2016-10-17 14:02:18 EDT - FINE - LOCAL - Creating the connection to the server.
+2016-10-17 14:02:18 EDT - INFO - LOCAL - 	Successfully connected to localhost:21.
+2016-10-17 14:02:18 EDT - FINE - LOCAL - Creating the streams of the control socket.
+2016-10-17 14:02:18 EDT - FINE - LOCAL - 	Successfully created the streams.
+2016-10-17 14:02:18 EDT - INFO - CONTROL - 220-FileZilla Server 0.9.59 beta
+220-written by Tim Kosse (tim.kosse@filezilla-project.org)
+220 Please visit https://filezilla-project.org/
+
+2016-10-17 14:02:18 EDT - INFO - LOCAL - You've connected to the server. Type 'help' to see all the commands you can do, or do login to start logging in.
+2016-10-17 14:02:22 EDT - INFO - LOCAL - help -> Displays information about the commands and what actions they preform.
+2016-10-17 14:02:22 EDT - INFO - LOCAL - home -> Changes the directory to the home directory.
+2016-10-17 14:02:22 EDT - INFO - LOCAL - ls -> Prints list of files.
+2016-10-17 14:02:22 EDT - INFO - LOCAL - quit -> Destroys the FTP connection and stops all communications between you and the server
+2016-10-17 14:02:22 EDT - INFO - LOCAL - pwd -> Prints the current working directory of the server.
+2016-10-17 14:02:22 EDT - INFO - LOCAL - cd -> Changes the working directory. Example: cd /folder/
+2016-10-17 14:02:22 EDT - INFO - LOCAL - get -> Retrieves a file.
+2016-10-17 14:02:22 EDT - INFO - LOCAL - login -> Starts the authentication sequence.
+2016-10-17 14:02:24 EDT - INFO - LOCAL - Please enter your username: 
+2016-10-17 14:02:25 EDT - FINE - LOCAL - Authenticating amir.
+2016-10-17 14:02:25 EDT - INFO - LOCAL - Username was successful. Please enter password: 
+2016-10-17 14:02:26 EDT - INFO - LOCAL - Login successful.
+2016-10-17 14:02:26 EDT - INFO - LOCAL - You're logged in. Do `help` to see commands you can do.
+2016-10-17 14:02:28 EDT - FINER - LOCAL - PORT 127,0,0,1,47,242
+2016-10-17 14:02:28 EDT - INFO - CONTROL - 200 Port command successful
+
+2016-10-17 14:02:28 EDT - INFO - CONTROL - 150 Opening data channel for directory listing of "/"
+226 Successfully transferred "/"
+
+2016-10-17 14:02:28 EDT - FINE - LOCAL - Socket disconnected.
+2016-10-17 14:02:28 EDT - INFO - DATA - -r--r--r-- 1 ftp ftp              2 Sep 30 14:27 banned-ips.json
+-r--r--r-- 1 ftp ftp              2 Sep 30 14:27 banned-players.json
+-r--r--r-- 1 ftp ftp           1182 Sep 30 14:27 bukkit.yml
+-r--r--r-- 1 ftp ftp            560 Sep 30 14:27 commands.yml
+-r--r--r-- 1 ftp ftp            183 Sep 03  2016 eula.txt
+-r--r--r-- 1 ftp ftp           2576 Sep 03  2016 help.yml
+drwxr-xr-x 1 ftp ftp              0 Oct 04 00:30 logs
+-r--r--r-- 1 ftp ftp            132 Sep 30 14:27 ops.json
+-r--r--r-- 1 ftp ftp              0 Sep 03  2016 permissions.yml
+drwxr-xr-x 1 ftp ftp              0 Sep 30 14:28 plugins
+-r--r--r-- 1 ftp ftp            810 Oct 02 00:54 server.properties
+-r--r--r-- 1 ftp ftp       21090487 Sep 03  2016 spigot-latest.jar
+-r--r--r-- 1 ftp ftp           2990 Sep 30 14:28 spigot.yml
+-r--r--r-- 1 ftp ftp             27 Sep 03  2016 start.sh
+-r--r--r-- 1 ftp ftp            103 Sep 30 14:28 usercache.json
+-r--r--r-- 1 ftp ftp              2 Sep 03  2016 whitelist.json
+drwxr-xr-x 1 ftp ftp  
+2016-10-17 14:02:28 EDT - INFO - DATA -             0 Oct 05 00:20 world
+drwxr-xr-x 1 ftp ftp              0 Oct 05 00:20 world_nether
+drwxr-xr-x 1 ftp ftp              0 Oct 05 00:20 world_the_end
+
+2016-10-17 14:02:31 EDT - FINER - LOCAL - PORT 127,0,0,1,47,247
+2016-10-17 14:02:31 EDT - INFO - CONTROL - 200 Port command successful
+
+2016-10-17 14:02:31 EDT - FINE - LOCAL - Socket disconnected.
+2016-10-17 14:02:31 EDT - INFO - LOCAL - Transfer was successful.
+2016-10-17 14:02:31 EDT - INFO - DATA - Transferring file start.sh.
+2016-10-17 14:02:31 EDT - INFO - DATA - 	Transfer of start.sh completed.
+2016-10-17 14:02:42 EDT - INFO - LOCAL - Welcome to Amir's FTP Client!
+2016-10-17 14:02:42 EDT - INFO - LOCAL - Log file found. Appending...
+2016-10-17 14:02:42 EDT - FINE - LOCAL - 	Log file initiated.
+2016-10-17 14:02:42 EDT - FINE - LOCAL - Port argument was left empty, defaulting to port 21.
+2016-10-17 14:02:42 EDT - INFO - LOCAL - Choose a mode:
+	1. Active
+	2. Passive
+	3. Extended Active
+	4. Extended Passive
+2016-10-17 14:02:44 EDT - INFO - LOCAL - Alright, selecting passive mode.
+2016-10-17 14:02:44 EDT - FINE - LOCAL - Registering commands.
+2016-10-17 14:02:44 EDT - FINE - LOCAL - 	Registered.
+2016-10-17 14:02:44 EDT - FINE - LOCAL - Creating the connection to the server.
+2016-10-17 14:02:44 EDT - INFO - LOCAL - 	Successfully connected to localhost:21.
+2016-10-17 14:02:44 EDT - FINE - LOCAL - Creating the streams of the control socket.
+2016-10-17 14:02:44 EDT - FINE - LOCAL - 	Successfully created the streams.
+2016-10-17 14:02:44 EDT - INFO - CONTROL - 220-FileZilla Server 0.9.59 beta
+220-written by Tim Kosse (tim.kosse@filezilla-project.org)
+220 Please visit https://filezilla-project.org/
+
+2016-10-17 14:02:44 EDT - INFO - LOCAL - You've connected to the server. Type 'help' to see all the commands you can do, or do login to start logging in.
+2016-10-17 14:02:46 EDT - INFO - LOCAL - Please enter your username: 
+2016-10-17 14:02:47 EDT - FINE - LOCAL - Authenticating amir.
+2016-10-17 14:02:47 EDT - INFO - LOCAL - Username was successful. Please enter password: 
+2016-10-17 14:02:48 EDT - INFO - LOCAL - Login successful.
+2016-10-17 14:02:48 EDT - INFO - LOCAL - You're logged in. Do `help` to see commands you can do.
+2016-10-17 14:02:50 EDT - FINEST - LOCAL - Response from server: 227 Entering Passive Mode (127,0,0,1,221,47)
+
+2016-10-17 14:02:51 EDT - INFO - CONTROL - 150 Opening data channel for directory listing of "/"
+226 Successfully transferred "/"
+
+2016-10-17 14:02:51 EDT - FINE - LOCAL - Socket disconnected.
+2016-10-17 14:02:51 EDT - INFO - DATA - -r--r--r-- 1 ftp ftp              2 Sep 30 14:27 banned-ips.json
+-r--r--r-- 1 ftp ftp              2 Sep 30 14:27 banned-players.json
+-r--r--r-- 1 ftp ftp           1182 Sep 30 14:27 bukkit.yml
+-r--r--r-- 1 ftp ftp            560 Sep 30 14:27 commands.yml
+-r--r--r-- 1 ftp ftp            183 Sep 03  2016 eula.txt
+-r--r--r-- 1 ftp ftp           2576 Sep 03  2016 help.yml
+drwxr-xr-x 1 ftp ftp              0 Oct 04 00:30 logs
+-r--r--r-- 1 ftp ftp            132 Sep 30 14:27 ops.json
+-r--r--r-- 1 ftp ftp              0 Sep 03  2016 permissions.yml
+drwxr-xr-x 1 ftp ftp              0 Sep 30 14:28 plugins
+-r--r--r-- 1 ftp ftp            810 Oct 02 00:54 server.properties
+-r--r--r-- 1 ftp ftp       21090487 Sep 03  2016 spigot-latest.jar
+-r--r--r-- 1 ftp ftp           2990 Sep 30 14:28 spigot.yml
+-r--r--r-- 1 ftp ftp             27 Sep 03  2016 start.sh
+-r--r--r-- 1 ftp ftp            103 Sep 30 14:28 usercache.json
+-r--r--r-- 1 ftp ftp              2 Sep 03  2016 whitelist.json
+drwxr-xr-x 1 ftp ftp  
+2016-10-17 14:02:51 EDT - INFO - DATA -             0 Oct 05 00:20 world
+drwxr-xr-x 1 ftp ftp              0 Oct 05 00:20 world_nether
+drwxr-xr-x 1 ftp ftp              0 Oct 05 00:20 world_the_end
+
+2016-10-17 14:02:54 EDT - INFO - CONTROL - 250 CWD successful. "/logs" is current directory.
+
+2016-10-17 14:02:55 EDT - FINEST - LOCAL - Response from server: 227 Entering Passive Mode (127,0,0,1,194,137)
+
+2016-10-17 14:02:55 EDT - INFO - CONTROL - 150 Opening data channel for directory listing of "/logs"
+226 Successfully transferred "/logs"
+
+2016-10-17 14:02:55 EDT - FINE - LOCAL - Socket disconnected.
+2016-10-17 14:02:55 EDT - INFO - DATA - -r--r--r-- 1 ftp ftp            234 Sep 03  2016 2016-09-03-1.log.gz
+-r--r--r-- 1 ftp ftp           1404 Sep 04  2016 2016-09-03-10.log.gz
+-r--r--r-- 1 ftp ftp           1362 Sep 03  2016 2016-09-03-2.log.gz
+-r--r--r-- 1 ftp ftp           1689 Sep 03  2016 2016-09-03-3.log.gz
+-r--r--r-- 1 ftp ftp           1401 Sep 03  2016 2016-09-03-4.log.gz
+-r--r--r-- 1 ftp ftp           1394 Sep 03  2016 2016-09-03-5.log.gz
+-r--r--r-- 1 ftp ftp           1413 Sep 03  2016 2016-09-03-6.log.gz
+-r--r--r-- 1 ftp ftp           1807 Sep 03  2016 2016-09-03-7.log.gz
+-r--r--r-- 1 ftp ftp           1956 Sep 03  2016 2016-09-03-8.log.gz
+-r--r--r-- 1 ftp ftp           1621 Sep 03  2016 2016-09-03-9.log.gz
+-r--r--r-- 1 ftp ftp            407 Sep 05  2016 2016-09-04-1.log.gz
+-r--r--r-- 1 ftp ftp            425 Sep 06  2016 2016-09-05-1.log.gz
+-r--r--r-- 1 ftp ftp            217 Sep 25 10:52 2016-09-06-1.log.gz
+-r--r--r-- 1 ftp ftp           1829 Sep 26 00:53 2016-09-25-1.log.gz
+-r--r--r-- 1 ftp ftp            622 Sep 27 
+2016-10-17 14:02:55 EDT - INFO - DATA - 00:02 2016-09-26-1.log.gz
+-r--r--r-- 1 ftp ftp            640 Sep 28 00:42 2016-09-27-1.log.gz
+-r--r--r-- 1 ftp ftp            539 Sep 30 14:27 2016-09-28-1.log.gz
+-r--r--r-- 1 ftp ftp           2089 Oct 01 00:28 2016-09-30-1.log.gz
+-r--r--r-- 1 ftp ftp            555 Oct 02 00:29 2016-10-01-1.log.gz
+-r--r--r-- 1 ftp ftp            763 Oct 03 00:29 2016-10-02-1.log.gz
+-r--r--r-- 1 ftp ftp            767 Oct 04 00:30 2016-10-03-1.log.gz
+-r--r--r-- 1 ftp ftp          10107 Oct 04 23:53 latest.log
+
+2016-10-17 14:03:00 EDT - FINEST - LOCAL - Response from server: 227 Entering Passive Mode (127,0,0,1,197,231)
+
+2016-10-17 14:03:00 EDT - FINE - LOCAL - Socket disconnected.
+2016-10-17 14:03:00 EDT - INFO - LOCAL - Transfer was successful.
+2016-10-17 14:03:00 EDT - INFO - DATA - Transferring file latest.log.
+2016-10-17 14:03:00 EDT - INFO - DATA - 	Transfer of latest.log completed.
+2016-10-17 14:03:02 EDT - INFO - CONTROL - 250 CWD successful. "/" is current directory.
+
+2016-10-17 14:03:03 EDT - FINEST - LOCAL - Response from server: 227 Entering Passive Mode (127,0,0,1,206,65)
+
+2016-10-17 14:03:03 EDT - FINE - LOCAL - Socket disconnected.
+2016-10-17 14:03:03 EDT - INFO - CONTROL - 150 Opening data channel for directory listing of "/"
+
+2016-10-17 14:03:03 EDT - FINE - LOCAL - Socket disconnected.
+2016-10-17 14:03:03 EDT - INFO - DATA - -r--r--r-- 1 ftp ftp              2 Sep 30 14:27 banned-ips.json
+-r--r--r-- 1 ftp ftp              2 Sep 30 14:27 banned-players.json
+-r--r--r-- 1 ftp ftp           1182 Sep 30 14:27 bukkit.yml
+-r--r--r-- 1 ftp ftp            560 Sep 30 14:27 commands.yml
+-r--r--r-- 1 ftp ftp            183 Sep 03  2016 eula.txt
+-r--r--r-- 1 ftp ftp           2576 Sep 03  2016 help.yml
+drwxr-xr-x 1 ftp ftp              0 Oct 04 00:30 logs
+-r--r--r-- 1 ftp ftp            132 Sep 30 14:27 ops.json
+-r--r--r-- 1 ftp ftp              0 Sep 03  2016 permissions.yml
+drwxr-xr-x 1 ftp ftp              0 Sep 30 14:28 plugins
+-r--r--r-- 1 ftp ftp            810 Oct 02 00:54 server.properties
+-r--r--r-- 1 ftp ftp       21090487 Sep 03  2016 spigot-latest.jar
+-r--r--r-- 1 ftp ftp           2990 Sep 30 14:28 spigot.yml
+-r--r--r-- 1 ftp ftp             27 Sep 03  2016 start.sh
+-r--r--r-- 1 ftp ftp            103 Sep 30 14:28 usercache.json
+-r--r--r-- 1 ftp ftp              2 Sep 03  2016 whitelist.json
+drwxr-xr-x 1 ftp ftp  
+2016-10-17 14:03:03 EDT - INFO - DATA -             0 Oct 05 00:20 world
+drwxr-xr-x 1 ftp ftp              0 Oct 05 00:20 world_nether
+drwxr-xr-x 1 ftp ftp              0 Oct 05 00:20 world_the_end
+
+2016-10-17 14:03:11 EDT - INFO - LOCAL - Welcome to Amir's FTP Client!
+2016-10-17 14:03:11 EDT - INFO - LOCAL - Log file found. Appending...
+2016-10-17 14:03:11 EDT - FINE - LOCAL - 	Log file initiated.
+2016-10-17 14:03:11 EDT - FINE - LOCAL - Port argument was left empty, defaulting to port 21.
+2016-10-17 14:03:13 EDT - INFO - LOCAL - Alright, selecting extended active mode.
+2016-10-17 14:03:13 EDT - FINE - LOCAL - Registering commands.
+2016-10-17 14:03:13 EDT - FINE - LOCAL - 	Registered.
+2016-10-17 14:03:13 EDT - FINE - LOCAL - Creating the connection to the server.
+2016-10-17 14:03:13 EDT - INFO - LOCAL - 	Successfully connected to localhost:21.
+2016-10-17 14:03:13 EDT - FINE - LOCAL - Creating the streams of the control socket.
+2016-10-17 14:03:13 EDT - FINE - LOCAL - 	Successfully created the streams.
+2016-10-17 14:03:13 EDT - INFO - CONTROL - 220-FileZilla Server 0.9.59 beta
+220-written by Tim Kosse (tim.kosse@filezilla-project.org)
+220 Please visit https://filezilla-project.org/
+
+2016-10-17 14:03:13 EDT - INFO - LOCAL - You've connected to the server. Type 'help' to see all the commands you can do, or do login to start logging in.
+2016-10-17 14:03:14 EDT - INFO - LOCAL - Please enter your username: 
+2016-10-17 14:03:15 EDT - FINE - LOCAL - Authenticating amir.
+2016-10-17 14:03:16 EDT - INFO - LOCAL - Username was successful. Please enter password: 
+2016-10-17 14:03:17 EDT - INFO - LOCAL - Login successful.
+2016-10-17 14:03:17 EDT - INFO - LOCAL - You're logged in. Do `help` to see commands you can do.
+2016-10-17 14:03:19 EDT - FINER - LOCAL - EPRT |1|127.0.0.1|12294|
+2016-10-17 14:03:20 EDT - INFO - CONTROL - 200 Port command successful
+
+2016-10-17 14:03:20 EDT - INFO - CONTROL - 150 Opening data channel for directory listing of "/"
+226 Successfully transferred "/"
+
+2016-10-17 14:03:20 EDT - FINE - LOCAL - Socket disconnected.
+2016-10-17 14:03:20 EDT - INFO - DATA - -r--r--r-- 1 ftp ftp              2 Sep 30 14:27 banned-ips.json
+-r--r--r-- 1 ftp ftp              2 Sep 30 14:27 banned-players.json
+-r--r--r-- 1 ftp ftp           1182 Sep 30 14:27 bukkit.yml
+-r--r--r-- 1 ftp ftp            560 Sep 30 14:27 commands.yml
+-r--r--r-- 1 ftp ftp            183 Sep 03  2016 eula.txt
+-r--r--r-- 1 ftp ftp           2576 Sep 03  2016 help.yml
+drwxr-xr-x 1 ftp ftp              0 Oct 04 00:30 logs
+-r--r--r-- 1 ftp ftp            132 Sep 30 14:27 ops.json
+-r--r--r-- 1 ftp ftp              0 Sep 03  2016 permissions.yml
+drwxr-xr-x 1 ftp ftp              0 Sep 30 14:28 plugins
+-r--r--r-- 1 ftp ftp            810 Oct 02 00:54 server.properties
+-r--r--r-- 1 ftp ftp       21090487 Sep 03  2016 spigot-latest.jar
+-r--r--r-- 1 ftp ftp           2990 Sep 30 14:28 spigot.yml
+-r--r--r-- 1 ftp ftp             27 Sep 03  2016 start.sh
+-r--r--r-- 1 ftp ftp            103 Sep 30 14:28 usercache.json
+-r--r--r-- 1 ftp ftp              2 Sep 03  2016 whitelist.json
+drwxr-xr-x 1 ftp ftp  
+2016-10-17 14:03:20 EDT - INFO - DATA -             0 Oct 05 00:20 world
+drwxr-xr-x 1 ftp ftp              0 Oct 05 00:20 world_nether
+drwxr-xr-x 1 ftp ftp              0 Oct 05 00:20 world_the_end
+
+2016-10-17 14:03:25 EDT - FINER - LOCAL - EPRT |1|127.0.0.1|12295|
+2016-10-17 14:03:25 EDT - INFO - CONTROL - 200 Port command successful
+
+2016-10-17 14:03:25 EDT - FINE - LOCAL - Socket disconnected.
+2016-10-17 14:03:25 EDT - INFO - LOCAL - Transfer was successful.
+2016-10-17 14:03:25 EDT - INFO - DATA - Transferring file ops.json.
+2016-10-17 14:03:25 EDT - INFO - DATA - 	Transfer of ops.json completed.
+2016-10-17 14:03:30 EDT - INFO - LOCAL - Welcome to Amir's FTP Client!
+2016-10-17 14:03:30 EDT - INFO - LOCAL - Log file found. Appending...
+2016-10-17 14:03:30 EDT - FINE - LOCAL - 	Log file initiated.
+2016-10-17 14:03:30 EDT - FINE - LOCAL - Port argument was left empty, defaulting to port 21.
+2016-10-17 14:03:31 EDT - INFO - LOCAL - Alright, selecting extended passive mode.
+2016-10-17 14:03:31 EDT - FINE - LOCAL - Registering commands.
+2016-10-17 14:03:31 EDT - FINE - LOCAL - 	Registered.
+2016-10-17 14:03:31 EDT - FINE - LOCAL - Creating the connection to the server.
+2016-10-17 14:03:31 EDT - INFO - LOCAL - 	Successfully connected to localhost:21.
+2016-10-17 14:03:31 EDT - FINE - LOCAL - Creating the streams of the control socket.
+2016-10-17 14:03:31 EDT - FINE - LOCAL - 	Successfully created the streams.
+2016-10-17 14:03:32 EDT - INFO - CONTROL - 220-FileZilla Server 0.9.59 beta
+220-written by Tim Kosse (tim.kosse@filezilla-project.org)
+220 Please visit https://filezilla-project.org/
+
+2016-10-17 14:03:32 EDT - INFO - LOCAL - You've connected to the server. Type 'help' to see all the commands you can do, or do login to start logging in.
+2016-10-17 14:03:33 EDT - INFO - LOCAL - Please enter your username: 
+2016-10-17 14:03:34 EDT - FINE - LOCAL - Authenticating amir.
+2016-10-17 14:03:34 EDT - INFO - LOCAL - Username was successful. Please enter password: 
+2016-10-17 14:03:37 EDT - INFO - LOCAL - Login successful.
+2016-10-17 14:03:37 EDT - INFO - LOCAL - You're logged in. Do `help` to see commands you can do.
+2016-10-17 14:03:39 EDT - FINEST - LOCAL - Response from server: 229 Entering Extended Passive Mode (|||63013|)
+
+2016-10-17 14:03:39 EDT - INFO - CONTROL - 150 Opening data channel for directory listing of "/"
+226 Successfully transferred "/"
+
+2016-10-17 14:03:39 EDT - FINE - LOCAL - Socket disconnected.
+2016-10-17 14:03:39 EDT - INFO - DATA - -r--r--r-- 1 ftp ftp              2 Sep 30 14:27 banned-ips.json
+-r--r--r-- 1 ftp ftp              2 Sep 30 14:27 banned-players.json
+-r--r--r-- 1 ftp ftp           1182 Sep 30 14:27 bukkit.yml
+-r--r--r-- 1 ftp ftp            560 Sep 30 14:27 commands.yml
+-r--r--r-- 1 ftp ftp            183 Sep 03  2016 eula.txt
+-r--r--r-- 1 ftp ftp           2576 Sep 03  2016 help.yml
+drwxr-xr-x 1 ftp ftp              0 Oct 04 00:30 logs
+-r--r--r-- 1 ftp ftp            132 Sep 30 14:27 ops.json
+-r--r--r-- 1 ftp ftp              0 Sep 03  2016 permissions.yml
+drwxr-xr-x 1 ftp ftp              0 Sep 30 14:28 plugins
+-r--r--r-- 1 ftp ftp            810 Oct 02 00:54 server.properties
+-r--r--r-- 1 ftp ftp       21090487 Sep 03  2016 spigot-latest.jar
+-r--r--r-- 1 ftp ftp           2990 Sep 30 14:28 spigot.yml
+-r--r--r-- 1 ftp ftp             27 Sep 03  2016 start.sh
+-r--r--r-- 1 ftp ftp            103 Sep 30 14:28 usercache.json
+-r--r--r-- 1 ftp ftp              2 Sep 03  2016 whitelist.json
+drwxr-xr-x 1 ftp ftp  
+2016-10-17 14:03:39 EDT - INFO - DATA -             0 Oct 05 00:20 world
+drwxr-xr-x 1 ftp ftp              0 Oct 05 00:20 world_nether
+drwxr-xr-x 1 ftp ftp              0 Oct 05 00:20 world_the_end
+
+2016-10-17 14:03:44 EDT - FINEST - LOCAL - Response from server: 229 Entering Extended Passive Mode (|||62879|)
+
+2016-10-17 14:03:44 EDT - FINE - LOCAL - Socket disconnected.
+2016-10-17 14:03:44 EDT - INFO - LOCAL - Transfer was successful.
+2016-10-17 14:03:44 EDT - INFO - DATA - Transferring file help.yml.
+2016-10-17 14:03:44 EDT - INFO - DATA - 	Transfer of help.yml completed.

@@ -12,6 +12,7 @@ import java.util.logging.Level;
 
 public class Main {
     public static void main(String... args) {
+        Log.log(Level.INFO, Type.LOCAL, "Welcome to Amir's FTP Client!");
         /*
             Expected:
             1. Server IP.
@@ -84,6 +85,8 @@ public class Main {
                 break;
             default:
         }
+        Log.log(Level.INFO, Type.LOCAL, "Alright, selecting %s mode.", builder.getMode().getModeName().toLowerCase());
+
         FTPClient client = builder.build();
 
         try {

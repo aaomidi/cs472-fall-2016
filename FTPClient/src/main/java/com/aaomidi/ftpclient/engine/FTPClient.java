@@ -226,9 +226,7 @@ public class FTPClient {
     private void listenToData() {
         new Thread(() -> {
             try {
-                Log.log(Level.INFO, Type.DATA, "Called.");
                 dataLock.lock();
-                Log.log(Level.INFO, Type.DATA, "Called2.");
                 Socket dataSocket = null;
                 switch (mode) {
                     case EACTIVE:
@@ -251,7 +249,6 @@ public class FTPClient {
                 }
 
                 if (isFileTransfer()) {
-                    Log.log(Level.INFO, Type.DATA, "Called3.");
                     setFileTransfer(false);
 
                     Log.log(Level.INFO, Type.DATA, "Transferring file %s.", fileName);
@@ -461,6 +458,7 @@ public class FTPClient {
     public static class FTPClientBuilder {
         private String hostname;
         private short port;
+        @Getter
         private FTPMode mode;
 
         public static FTPClientBuilder builder() {

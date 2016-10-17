@@ -66,7 +66,7 @@ public class GetCommand extends FTPCommand {
             return GetStatus.FILE_NOT_FOUND;
         }
 
-        if (statusCode != 226) {
+        if (statusCode != 226 && statusCode != 150) {
             return GetStatus.ERROR;
         }
 
