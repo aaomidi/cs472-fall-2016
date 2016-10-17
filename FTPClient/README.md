@@ -18,19 +18,19 @@ We can easily seperate the `statuscode` from the message using regular expressio
 ### Commands and responses:
 All commands required from us are implemented. These commands are:
 
-*. `USER`
-*. `PASS`
-*. `CWD`
-*. `CDUP`
-*. `QUIT`
-*. `PASV`
-*. `EPSV`
-*. `PORT`
-*. `EPRT`
-*. `RETR`
-*. `PWD`
-*. `LIST`
-*. `HELP`
+- `USER`
+- `PASS`
+- `CWD`
+- `CDUP`
+- `QUIT`
+- `PASV`
+- `EPSV`
+- `PORT`
+- `EPRT`
+- `RETR`
+- `PWD`
+- `LIST`
+- `HELP`
 
 ### Error handling:
 Most of the errors are handled using the `lang` package.
