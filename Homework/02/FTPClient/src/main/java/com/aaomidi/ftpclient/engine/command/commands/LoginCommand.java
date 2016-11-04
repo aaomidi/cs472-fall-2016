@@ -35,6 +35,7 @@ public class LoginCommand extends FTPCommand {
             List<String> output = client.getOutput();
             loginStatus = handleUsernameOutput(output);
         } catch (Exception ex) {
+            ex.printStackTrace();
             Log.log(Level.SEVERE, Type.LOCAL, "Error when authenticating username: %s", username);
             return;
         }
@@ -51,6 +52,7 @@ public class LoginCommand extends FTPCommand {
             List<String> output = client.getOutput();
             loginStatus = handlePasswordOutput(output);
         } catch (Exception ex) {
+            ex.printStackTrace();
             Log.log(Level.SEVERE, Type.LOCAL, "Error when authenticating username: %s", username);
             return;
         }
@@ -69,7 +71,6 @@ public class LoginCommand extends FTPCommand {
             return LoginStatus.ERROR;
         }
         int code = StatusCodes.getStatusCodeFromString(output);
-
         Log.log(Level.INFO, Type.LOCAL, StatusCodes.getMessage(code));
 
         if (code == 331) {

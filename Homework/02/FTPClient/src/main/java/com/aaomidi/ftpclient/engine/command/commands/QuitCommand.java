@@ -5,6 +5,7 @@ import com.aaomidi.ftpclient.engine.command.FTPCommand;
 import com.aaomidi.ftpclient.engine.lang.Type;
 import com.aaomidi.ftpclient.util.Log;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -21,6 +22,11 @@ public class QuitCommand extends FTPCommand {
 
     @Override
     public void execute(String command, List<String> args) {
+        try {
+            client.writeControl("Quit");
+        } catch (IOException e) {
+            //ignore
+        }
         Log.log(Level.INFO, Type.LOCAL, "Shutting off connection to server.");
         client.close();
         Log.log(Level.INFO, Type.LOCAL, "Goodbye.");

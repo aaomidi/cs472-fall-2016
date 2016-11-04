@@ -58,7 +58,7 @@ public class Main {
 
         if (argCount > 2) {
             try {
-                builder.port(Short.valueOf(args[2]));
+                builder.port(Integer.valueOf(args[2]));
             } catch (NumberFormatException ex) {
                 Log.log(Level.SEVERE, Type.LOCAL, "Port number was invalid, shutting down.");
                 System.exit(-1);

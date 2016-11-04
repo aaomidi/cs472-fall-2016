@@ -5,5 +5,5 @@ import java.util.regex.Pattern;
 public class FTPRegex {
     public static Pattern RESPONSE_CODE = Pattern.compile("^(\\d+).*", Pattern.DOTALL);
     public static Pattern PASSIVE_PORT = Pattern.compile("^\\d+.*\\((\\d+),(\\d+),(\\d+),(\\d+),(\\d+),(\\d+)\\).*", Pattern.DOTALL);
-    public static Pattern EPASSIVE_PORT = Pattern.compile("^229 .* \\(\\|\\|\\|(\\d+)\\|\\)", Pattern.DOTALL);
+    public static Pattern EPASSIVE_PORT = Pattern.compile("^229 .* \\|(\\d*)\\|(.*)\\|(\\d*)\\|", Pattern.DOTALL);
 }

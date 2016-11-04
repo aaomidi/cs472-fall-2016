@@ -38,3 +38,5 @@ $RECYCLE.BIN/
 node_components/
 bower_components/
 node_modules/
+*.log
+*.json

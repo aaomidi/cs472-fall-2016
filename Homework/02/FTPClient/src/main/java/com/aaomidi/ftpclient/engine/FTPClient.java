@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 @RequiredArgsConstructor
 public class FTPClient {
     private final String hostname;
-    private final Short port;
+    private final Integer port;
     @Getter
     private final FTPMode mode;
 
@@ -145,6 +145,7 @@ public class FTPClient {
 
     /**
      * Creates a PASV connection to server.
+     *
      * @throws IOException
      */
     public void createPassiveDataConnection() throws IOException {
@@ -163,6 +164,7 @@ public class FTPClient {
             return;
         }
 
+        System.out.println(line);
         int statusCode = StatusCodes.getStatusCodeFromString(line);
 
         if (statusCode != 227) {
@@ -207,7 +209,7 @@ public class FTPClient {
         }
 
         activeDataServerSocket = new ServerSocket(port);
-        activeDataServerSocket.setSoTimeout(250);
+        activeDataServerSocket.setSoTimeout(500);
         listenToData();
 
         Socket clientSocket = this.getControlSocket();
@@ -323,7 +325,7 @@ public class FTPClient {
      */
     private void createConnection() throws IOException {
         controlSocket = new Socket(inetAddress, port);
-        controlSocket.setSoTimeout(250);
+        controlSocket.setSoTimeout(500);
     }
 
     /**
@@ -342,6 +344,7 @@ public class FTPClient {
 
     /**
      * Registers a specific command. Registers its aliases for faster lookup.
+     *
      * @param command
      */
     private void registerCommand(FTPCommand command) {
@@ -377,9 +380,14 @@ public class FTPClient {
         try {
             String msg;
             byte[] buffer = new byte[1024];
-            int read;
+            int read = 99;
             int i = 0;
-            while ((read = is.read(buffer)) > 0 && i++ != count) {
+            while (!socket.isClosed() && socket.isConnected() && read > 0 && i++ != count) {
+                read = is.read(buffer);
+                if (read == -1) {
+                    socket.close();
+                    return output;
+                }
                 msg = new String(buffer, 0, read);
                 output.add(msg);
             }
@@ -393,6 +401,7 @@ public class FTPClient {
 
     /**
      * Prepares EPRT connection.
+     *
      * @param port
      * @throws IOException
      */
@@ -429,6 +438,7 @@ public class FTPClient {
 
     /**
      * Prepares EPSV connection.
+     *
      * @throws IOException
      */
     public void createExtendedPassiveDataConnection() throws IOException {
@@ -464,7 +474,7 @@ public class FTPClient {
         }
         int port;
         try {
-            port = Integer.valueOf(matcher.group(1));
+            port = Integer.valueOf(matcher.group(3));
         } catch (NumberFormatException ex) {
             Log.log(Level.SEVERE, Type.LOCAL, "Issue with response from the server.");
             return;
@@ -476,6 +486,7 @@ public class FTPClient {
 
     /**
      * Prepares the data connection depending on the mode we're in.
+     *
      * @throws IOException
      */
     public void prepareConnection() throws IOException {
@@ -498,7 +509,7 @@ public class FTPClient {
     @ToString
     public static class FTPClientBuilder {
         private String hostname;
-        private short port;
+        private int port;
         @Getter
         private FTPMode mode;
 
@@ -515,7 +526,7 @@ public class FTPClient {
             return this;
         }
 
-        public FTPClientBuilder port(short port) {
+        public FTPClientBuilder port(int port) {
             this.port = port;
             return this;
         }

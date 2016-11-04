@@ -40,7 +40,7 @@ public class StatusCodes {
         /* RETR */
         VALUES.put(125, "Transfer starting.");
         VALUES.put(110, "This shouldn't happen.");
-        VALUES.put(150, "File status is oka; about to open a data connection.");
+        VALUES.put(150, "File status is okay; about to open a data connection.");
         VALUES.put(226, "Closing data connection.");
         VALUES.put(425, "Can't open data connection.");
         VALUES.put(426, "Connection closed; transfer aborted.");
