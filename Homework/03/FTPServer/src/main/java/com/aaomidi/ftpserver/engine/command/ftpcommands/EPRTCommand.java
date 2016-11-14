@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 public class EPRTCommand extends FTPCommand {
+    public static boolean ENABLED = true;
+
     public EPRTCommand(Main instance) {
         super(
                 instance,
@@ -33,7 +35,7 @@ public class EPRTCommand extends FTPCommand {
 
         int port;
         try {
-            port = Integer.valueOf(matcher.group(3)) ;
+            port = Integer.valueOf(matcher.group(3));
         } catch (Exception ex) {
             return "421 Error";
         }

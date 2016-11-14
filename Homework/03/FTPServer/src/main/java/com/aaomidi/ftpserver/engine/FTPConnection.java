@@ -42,10 +42,27 @@ public class FTPConnection {
     private DataSocketType dataSocketType = DataSocketType.NONE;
 
     public FTPConnection(FTPServer ftpServer, Socket controlSocket) {
-        currentWorkingDirectory = new File(System.getProperty("user.dir"));
-
         this.ftpServer = ftpServer;
         this.controlSocket = controlSocket;
+
+        Blacklist bl = ftpServer.getBlacklist().get(controlSocket.getInetAddress());
+        if (bl == null) {
+            bl = new Blacklist();
+            ftpServer.getBlacklist().put(controlSocket.getInetAddress(), bl);
+        }
+        if (!bl.canWork()) {
+
+            try {
+                writeToControl("503 Bye.");
+            } catch (Exception e) {
+            }
+            return;
+        }
+
+        Log.log(Level.INFO, Type.LOCAL, "Incoming connection from: %s:%d", controlSocket.getInetAddress().getHostAddress(), controlSocket.getPort());
+        currentWorkingDirectory = new File(System.getProperty("user.dir"));
+
+
         try {
             controlSocket.setSoTimeout(100);
         } catch (Exception e) {

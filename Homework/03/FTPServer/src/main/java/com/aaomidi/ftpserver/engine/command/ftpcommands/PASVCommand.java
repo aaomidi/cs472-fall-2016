@@ -9,6 +9,8 @@ import java.net.ServerSocket;
 import java.util.List;
 
 public class PASVCommand extends FTPCommand {
+    public static boolean ENABLED = true;
+
     public PASVCommand(Main instance) {
         super(
                 instance,
@@ -20,6 +22,9 @@ public class PASVCommand extends FTPCommand {
 
     @Override
     public String execute(FTPConnection connection, String command, List<String> args) {
+        if (!ENABLED) {
+            return "502 Command not implemented.";
+        }
         ServerSocket serverSocket = null;
         try {
             serverSocket = connection.createPassiveDataConnection();

@@ -1,7 +1,6 @@
 package com.aaomidi.ftpserver.util;
 
 
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -30,10 +29,10 @@ public class Log {
         }
         String m = null;
         try {
-            m = String.format("%s - %s - %s - %s", sdf.format(new Date()), level.getName(), type.toString(), String.format(msg.toString(), format));
+            m = String.format("#%d - %s - %s - %s - %s", Thread.currentThread().getId(), sdf.format(new Date()), level.getName(), type.toString(), String.format(msg.toString(), format));
             print(m);
         } catch (Exception ex) {
-            m = String.format("%s - %s - %s - %s", sdf.format(new Date()), level.getName(), type.toString(), msg.toString());
+            m = String.format("#%d - %s - %s - %s - %s", Thread.currentThread().getId(), sdf.format(new Date()), level.getName(), type.toString(), msg.toString());
             System.out.println(m);
         }
         logMessages.add(m);

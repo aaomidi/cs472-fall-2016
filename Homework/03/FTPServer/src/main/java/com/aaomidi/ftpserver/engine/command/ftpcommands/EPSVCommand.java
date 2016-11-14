@@ -10,6 +10,8 @@ import java.net.ServerSocket;
 import java.util.List;
 
 public class EPSVCommand extends FTPCommand {
+    public static boolean ENABLED = true;
+
     public EPSVCommand(Main instance) {
         super(
                 instance,

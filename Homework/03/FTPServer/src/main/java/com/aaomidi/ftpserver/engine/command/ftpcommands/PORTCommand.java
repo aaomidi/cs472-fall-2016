@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 public class PORTCommand extends FTPCommand {
+    public static boolean ENABLED = false;
+
     public PORTCommand(Main instance) {
         super(
                 instance,
@@ -21,6 +23,10 @@ public class PORTCommand extends FTPCommand {
 
     @Override
     public String execute(FTPConnection connection, String command, List<String> args) {
+        if (!ENABLED) {
+            return "502 Command not implemented.";
+        }
+
         if (args.size() != 1) {
             return "421 Error";
         }

@@ -67,9 +67,17 @@ public class Main {
             Log.log(Level.FINE, Type.LOCAL, "Port argument was left empty, defaulting to port 21.");
             builder.port((short) 21);
         }
-
-        Log.log(Level.INFO, Type.LOCAL, "Choose a mode:\n\t1. Active\n\t2. Passive\n\t3. Extended Active\n\t4. Extended Passive");
+        Log.log(Level.INFO, Type.LOCAL, "Is this connection an SSL connection?\n\t1. Yes\n\t2. No");
         int choice = scanner.nextInt();
+        switch (choice) {
+            case 1:
+                builder.setSSL(true);
+                break;
+            default:
+                builder.setSSL(false);
+        }
+        Log.log(Level.INFO, Type.LOCAL, "Choose a mode:\n\t1. Active\n\t2. Passive\n\t3. Extended Active\n\t4. Extended Passive");
+        choice = scanner.nextInt();
         switch (choice) {
             case 1:
                 builder.setMode(FTPMode.ACTIVE);

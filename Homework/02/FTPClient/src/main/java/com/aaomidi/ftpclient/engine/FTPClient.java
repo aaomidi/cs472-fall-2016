@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.net.ssl.SSLContext;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -24,6 +25,7 @@ public class FTPClient {
     private final Integer port;
     @Getter
     private final FTPMode mode;
+    private final boolean ssl;
 
     @Getter
     private final HashMap<String, FTPCommand> commands = new HashMap<>();
@@ -58,7 +60,7 @@ public class FTPClient {
      * @throws UnknownHostException If the host was not found.
      * @throws IOException          Throws if file is broken or not.
      */
-    public void connect() throws UnknownHostException, IOException {
+    public void connect() throws UnknownHostException, Exception {
         List<String> output;
 
         Log.log(Level.FINE, Type.LOCAL, "Registering commands.");
@@ -323,8 +325,12 @@ public class FTPClient {
      *
      * @throws IOException
      */
-    private void createConnection() throws IOException {
-        controlSocket = new Socket(inetAddress, port);
+    private void createConnection() throws Exception {
+        if (ssl) {
+            controlSocket = SSLContext.getDefault().getSocketFactory().createSocket(inetAddress, port);
+        } else {
+            controlSocket = new Socket(inetAddress, port);
+        }
         controlSocket.setSoTimeout(500);
     }
 
@@ -413,7 +419,7 @@ public class FTPClient {
         }
 
         activeDataServerSocket = new ServerSocket(port);
-        activeDataServerSocket.setSoTimeout(250);
+        activeDataServerSocket.setSoTimeout(500);
         listenToData();
 
         Socket clientSocket = this.getControlSocket();
@@ -512,6 +518,8 @@ public class FTPClient {
         private int port;
         @Getter
         private FTPMode mode;
+        @Getter
+        private boolean ssl;
 
         public static FTPClientBuilder builder() {
             return new FTPClientBuilder();
@@ -532,7 +540,12 @@ public class FTPClient {
         }
 
         public FTPClient build() {
-            return new FTPClient(hostname, port, mode);
+            return new FTPClient(hostname, port, mode, ssl);
+        }
+
+        public FTPClientBuilder setSSL(boolean ssl) {
+            this.ssl = ssl;
+            return this;
         }
 
         public FTPClientBuilder setMode(FTPMode mode) {

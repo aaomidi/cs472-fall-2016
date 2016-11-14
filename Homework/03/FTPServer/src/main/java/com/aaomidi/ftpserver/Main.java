@@ -34,11 +34,12 @@ public class Main {
     private FTPServer server;
 
     public static void main(String... args) {
+        // jar logName port config
         if (args.length < 2) {
             throw new Error("Not enough arguments. Goodbye.");
         }
 
-        String logPath = args[0];
+        String logName = args[0];
         String port = args[1];
 
         String configPath = "config.json";
@@ -46,16 +47,27 @@ public class Main {
             configPath = args[2];
         }
 
-        new Main(logPath, port, configPath);
+        new Main(logName, port, configPath);
     }
 
-    public Main(String logPath, String port, String configPath) {
-        File logFile = new File(logPath);
+    public Main(String logName, String port, String configPath) {
+        File configFile = new File(configPath);
+        Config config;
+        AuthConfig authConfig;
         try {
-            prepareLogFile(logFile);
+            config = prepareConfigFile(configFile);
+            authConfig = config.readAuthConfig();
+            config.checkModes();
         } catch (Exception ex) {
             throw new Error(ex);
         }
+
+        try {
+            prepareLogFile(logName, config);
+        } catch (Exception ex) {
+            throw new Error(ex);
+        }
+
         int portNumber;
         try {
             portNumber = Integer.valueOf(port);
@@ -69,15 +81,6 @@ public class Main {
 
         Log.log(Level.INFO, Type.LOCAL, "Server will start with the port number: %d", portNumber);
 
-        File configFile = new File(configPath);
-        Config config;
-        AuthConfig authConfig;
-        try {
-            config = prepareConfigFile(configFile);
-            authConfig = config.readAuthConfig();
-        } catch (Exception ex) {
-            throw new Error(ex);
-        }
         Log.log(Level.INFO, Type.LOCAL, "Welcome to Amir's FTP Server. The server is going to prepare the sockets. Remember you can use `newuser` to create a new user for the server.\n");
 
         server = new FTPServer(this, config, authConfig, portNumber);
@@ -133,12 +136,39 @@ public class Main {
         }).start();
     }
 
-    public void prepareLogFile(File logFile) throws IOException {
+    public void prepareLogFile(String fileName, Config config) throws IOException {
+        File logDirectory = new File(config.getLogDirectory());
+        if (!logDirectory.exists()) {
+            logDirectory.mkdirs();
+        }
+        File logFile = new File(logDirectory, fileName);
+
         if (!logFile.exists()) {
             if (!logFile.createNewFile()) {
-                throw new IOException("Log file not created.");
+                throw new Error("Log file not created.");
+            }
+        } else {
+            for (int i = config.getNumLogFiles() - 1; i > 0; i--) {
+                File file = new File(logDirectory, String.format("%s.%05d", fileName, i));
+
+
+                File otherFile = new File(logDirectory, String.format("%s.%05d", fileName, i - 1));
+
+                if (!file.exists() && !otherFile.exists()) continue;
+
+                file.delete();
+                otherFile.renameTo(file);
+            }
+            File otherFile = new File(logDirectory, String.format("%s.%05d", fileName, 0));
+            otherFile.delete();
+            logFile.renameTo(otherFile);
+
+            logFile = new File(logDirectory, fileName);
+            if (!logFile.createNewFile()) {
+                throw new Error("Log file not created.");
             }
         }
+
         Log.addFileHandler(logFile);
     }
 
@@ -147,7 +177,7 @@ public class Main {
             if (!file.createNewFile()) {
                 throw new IOException("Config file not created.");
             }
-            Config config = new Config("auth.json");
+            Config config = new Config("auth.json", "logs", 5,"no","yes");
             config.save(file);
             return config;
         }
