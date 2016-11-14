@@ -65,7 +65,7 @@ public class LoginCommand extends FTPCommand {
     }
 
     private LoginStatus handleUsernameOutput(List<String> list) {
-        if (list.isEmpty()) return LoginStatus.ERROR;
+        //if (list.isEmpty()) return LoginStatus.ERROR;
 
         String output = list.get(0);
         if (output == null) {

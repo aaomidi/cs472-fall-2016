@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 public class PORTCommand extends FTPCommand {
-    public static boolean ENABLED = false;
+    public static boolean ENABLED = true;
 
     public PORTCommand(Main instance) {
         super(

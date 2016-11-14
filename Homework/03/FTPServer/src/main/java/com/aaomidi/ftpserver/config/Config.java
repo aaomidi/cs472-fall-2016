@@ -58,6 +58,7 @@ public class Config {
             Log.log(Level.SEVERE, Type.LOCAL, "Both modes can not be disabled.");
             System.exit(-1);
         }
+
         if (portMode.equalsIgnoreCase("no")) {
             PORTCommand.ENABLED = false;
             EPRTCommand.ENABLED = false;

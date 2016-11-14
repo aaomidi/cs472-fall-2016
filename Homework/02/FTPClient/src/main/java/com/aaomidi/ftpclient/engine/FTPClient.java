@@ -162,7 +162,7 @@ public class FTPClient {
         List<String> output = getOutput();
         String line = output.get(0);
         if (line == null) {
-            Log.log(Level.SEVERE, Type.LOCAL, "Can not enter passive mode.");
+            Log.log(Level.SEVERE, Type.LOCAL, "Can not enter passive mode. Entry was null.");
             return;
         }
 
@@ -170,7 +170,7 @@ public class FTPClient {
         int statusCode = StatusCodes.getStatusCodeFromString(line);
 
         if (statusCode != 227) {
-            Log.log(Level.SEVERE, Type.LOCAL, "Can not enter passive mode.");
+            Log.log(Level.SEVERE, Type.LOCAL, "Can not enter passive mode. Status not 227");
             return;
         }
 
@@ -189,6 +189,7 @@ public class FTPClient {
         }
 
         passiveSocket = new Socket(controlSocket.getInetAddress(), port);
+        passiveSocket.setSoTimeout(1000);
         listenToData();
     }
 
@@ -309,8 +310,8 @@ public class FTPClient {
             while (true) {
                 try {
                     //Log.log(Level.FINEST, Type.LOCAL, "Sending keep alive.");
-                    writeControl("NOOP");
-                    getOutput();
+                    //writeControl("NOOP");
+                    //getOutput();
                     Thread.sleep(20000);
                 } catch (Exception e) {
                     Log.log(Level.SEVERE, Type.LOCAL, "ERROR WHEN SENDING KEEP ALIVE.");
@@ -396,6 +397,9 @@ public class FTPClient {
                 }
                 msg = new String(buffer, 0, read);
                 output.add(msg);
+                if(msg.contains("\r\n")){
+                    break;
+                }
             }
 
             Log.log(Level.FINE, Type.LOCAL, "Socket disconnected.");
@@ -561,7 +565,7 @@ public class FTPClient {
      * @throws IOException
      */
     public List<String> getOutput() throws IOException {
-        return getSocketOutput(controlSocket, 1);
+        return getSocketOutput(controlSocket, 99);
     }
 
 }

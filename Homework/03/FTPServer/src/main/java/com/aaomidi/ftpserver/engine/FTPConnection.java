@@ -201,7 +201,7 @@ public class FTPConnection {
 
     public ServerSocket createPassiveDataConnection() throws Exception {
         serverDataSocket = new ServerSocket(0);
-        serverDataSocket.setSoTimeout(100 * 20);
+        serverDataSocket.setSoTimeout(1000);
         setDataSocketType(DataSocketType.PASSIVE);
 
         return serverDataSocket;
@@ -210,8 +210,8 @@ public class FTPConnection {
     public void listenToPassiveDataConnection() {
         new Thread(() -> {
             try {
-                dataSocket = serverDataSocket.accept();
                 this.changeState(FTPState.DATA_SOCKET);
+                dataSocket = serverDataSocket.accept();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -230,6 +230,9 @@ public class FTPConnection {
             pw.write(message);
             pw.flush();
             dataSocket.close();
+            if (serverDataSocket != null && !serverDataSocket.isClosed()) {
+                serverDataSocket.close();
+            }
             return true;
         } catch (Exception ex) {
             return false;
@@ -246,6 +249,9 @@ public class FTPConnection {
             dataSocket.getOutputStream().write(file);
             dataSocket.getOutputStream().flush();
             dataSocket.close();
+            if (serverDataSocket != null && !serverDataSocket.isClosed()) {
+                serverDataSocket.close();
+            }
             return true;
         } catch (Exception ex) {
             return false;

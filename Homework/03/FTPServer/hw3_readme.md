@@ -33,3 +33,9 @@ The questions are located in `questions.md`
 This program uses Maven. Simply type in `mvn clean package`. Go to the jar folder it created and do `java -jar FTPServer.jar logpath port [configPath(optional)]`.
 
 If you try to run this in an IDE, please make sure you have the lombok plugin for your IDE or errors are going to show up everywhere!
+
+### Video
+
+The following video explains the program a little more in depth and can provide a larger insight than just this readme file.
+
+https://www.youtube.com/watch?v=ZbVjwp2KUm0

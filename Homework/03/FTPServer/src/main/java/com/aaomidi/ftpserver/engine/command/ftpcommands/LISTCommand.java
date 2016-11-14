@@ -50,13 +50,15 @@ public class LISTCommand extends FTPCommand {
                 out.append("\n");
             }
         }
+
         try {
-            connection.writeToControl("150 Opening data socket.");
+            connection.writeToControl(String.format("150 Opening data socket.\n226 Successfully transferred \"%s\"", file.getPath()));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        connection.writeToDataSocketAndClose(out.toString());
+
+        new Thread(() -> connection.writeToDataSocketAndClose(out.toString().trim())).start();
         connection.changeState(FTPState.AUTHENTICATED);
-        return String.format("226 Successfully transferred \"%s\"", file.getPath());
+        return null;
     }
 }

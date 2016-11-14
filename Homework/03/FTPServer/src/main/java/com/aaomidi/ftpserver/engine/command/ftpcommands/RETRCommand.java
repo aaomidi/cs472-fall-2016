@@ -25,7 +25,7 @@ public class RETRCommand extends FTPCommand {
             return "421 Error.";
         }
         try {
-            connection.writeToControl("150 opening data connection.");
+            //connection.writeToControl("150 opening data connection.");
         } catch (Exception e) {
             e.printStackTrace();
         }

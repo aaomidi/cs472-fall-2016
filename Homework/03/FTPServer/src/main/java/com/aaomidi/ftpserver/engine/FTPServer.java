@@ -26,6 +26,7 @@ public class FTPServer {
     @Getter
     private final AuthConfig authConfig;
     private final int portNumber;
+    private final int securePort;
     @Getter
     private final HashMap<String, FTPCommand> commands = new HashMap<>();
 
@@ -33,11 +34,12 @@ public class FTPServer {
     private ServerSocket controlSocket;
     private ServerSocket implicitControlSocket;
 
-    public FTPServer(Main instance, Config config, AuthConfig authConfig, int portNumber) {
+    public FTPServer(Main instance, Config config, AuthConfig authConfig, int portNumber, int securePort) {
         this.instance = instance;
         this.config = config;
         this.authConfig = authConfig;
         this.portNumber = portNumber;
+        this.securePort = securePort;
         this.registerCommands();
     }
 
@@ -46,7 +48,7 @@ public class FTPServer {
             Log.log(Level.INFO, Type.LOCAL, "Starting control socket...");
             controlSocket = new ServerSocket(portNumber);
             //SSLContext context=SSLContext.getDefault();
-            implicitControlSocket = SSLServerSocketFactory.getDefault().createServerSocket(990);
+            implicitControlSocket = SSLServerSocketFactory.getDefault().createServerSocket(securePort);
             Log.log(Level.INFO, Type.LOCAL, "\tStarted control socket.");
         } catch (Exception ex) {
             ex.printStackTrace();

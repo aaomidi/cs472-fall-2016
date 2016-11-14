@@ -41,6 +41,7 @@ public class PASVCommand extends FTPCommand {
                     serverSocket.getLocalPort() % 256);
 
             connection.listenToPassiveDataConnection();
+
             return msg;
         }
         return "421 Error.";

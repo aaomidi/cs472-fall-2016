@@ -18,6 +18,6 @@ public class NOOPCommand extends FTPCommand {
 
     @Override
     public String execute(FTPConnection connection, String command, List<String> args) {
-        return "200 okay";
+        return "200 OK";
     }
 }

@@ -35,22 +35,23 @@ public class Main {
 
     public static void main(String... args) {
         // jar logName port config
-        if (args.length < 2) {
+        if (args.length < 3) {
             throw new Error("Not enough arguments. Goodbye.");
         }
 
         String logName = args[0];
-        String port = args[1];
-
+        String normalPort = args[1];
+        String securePort = args[2];
         String configPath = "config.json";
-        if (args.length > 2) {
-            configPath = args[2];
+
+        if (args.length > 3) {
+            configPath = args[3];
         }
 
-        new Main(logName, port, configPath);
+        new Main(logName, normalPort, securePort, configPath);
     }
 
-    public Main(String logName, String port, String configPath) {
+    public Main(String logName, String port, String securePort, String configPath) {
         File configFile = new File(configPath);
         Config config;
         AuthConfig authConfig;
@@ -69,21 +70,32 @@ public class Main {
         }
 
         int portNumber;
+        int secureNumber;
         try {
             portNumber = Integer.valueOf(port);
         } catch (NumberFormatException ex) {
             portNumber = -1;
+        }
+        try {
+            secureNumber = Integer.valueOf(securePort);
+        } catch (NumberFormatException ex) {
+            secureNumber = -1;
         }
         if (portNumber < 1 || portNumber > 65535) {
             portNumber = 24142;
             Log.log(Level.SEVERE, Type.LOCAL, "Port number not recognized. Using %d", portNumber);
         }
 
+        if (secureNumber < 1 || secureNumber > 65535) {
+            secureNumber = 12341;
+            Log.log(Level.SEVERE, Type.LOCAL, "Secure port number not recognized. Using %d", secureNumber);
+        }
+
         Log.log(Level.INFO, Type.LOCAL, "Server will start with the port number: %d", portNumber);
 
         Log.log(Level.INFO, Type.LOCAL, "Welcome to Amir's FTP Server. The server is going to prepare the sockets. Remember you can use `newuser` to create a new user for the server.\n");
 
-        server = new FTPServer(this, config, authConfig, portNumber);
+        server = new FTPServer(this, config, authConfig, portNumber,secureNumber);
 
         try {
             server.startControlSocket();
@@ -177,7 +189,7 @@ public class Main {
             if (!file.createNewFile()) {
                 throw new IOException("Config file not created.");
             }
-            Config config = new Config("auth.json", "logs", 5,"no","yes");
+            Config config = new Config("auth.json", "logs", 5, "no", "yes");
             config.save(file);
             return config;
         }
