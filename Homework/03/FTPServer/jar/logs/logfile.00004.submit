@@ -1,0 +1,42 @@
+#1 - 2016-11-14 05:13:02 EST - INFO - LOCAL - Server will start with the port number: 45141
+#1 - 2016-11-14 05:13:02 EST - INFO - LOCAL - Welcome to Amir's FTP Server. The server is going to prepare the sockets. Remember you can use `newuser` to create a new user for the server.
+
+#1 - 2016-11-14 05:13:02 EST - INFO - LOCAL - Starting control socket...
+#1 - 2016-11-14 05:13:02 EST - INFO - LOCAL - 	Started control socket.
+#13 - 2016-11-14 05:14:05 EST - INFO - LOCAL - Incoming connection from: 127.0.0.1:1587
+#13 - 2016-11-14 05:14:05 EST - INFO - CONTROL - Writing to control: 220 Welcome to my FTP :)
+#17 - 2016-11-14 05:14:08 EST - FINE - LOCAL - Socket disconnected.
+#17 - 2016-11-14 05:14:08 EST - INFO - LOCAL - State: NOT_AUTHENTICATED, State info: 
+#17 - 2016-11-14 05:14:08 EST - INFO - CONTROL - PORT 127,0,0,1,6,57
+#17 - 2016-11-14 05:14:08 EST - INFO - CONTROL - Writing to control: 503 Bad sequence of commands
+#17 - 2016-11-14 05:14:09 EST - FINE - LOCAL - Socket disconnected.
+#17 - 2016-11-14 05:14:09 EST - INFO - LOCAL - State: NOT_AUTHENTICATED, State info: 
+#17 - 2016-11-14 05:14:09 EST - INFO - CONTROL - list
+#17 - 2016-11-14 05:14:09 EST - INFO - CONTROL - Writing to control: 503 Bad sequence of commands
+#13 - 2016-11-14 05:14:14 EST - INFO - LOCAL - Incoming connection from: 127.0.0.1:1605
+#13 - 2016-11-14 05:14:14 EST - INFO - CONTROL - Writing to control: 220 Welcome to my FTP :)
+#18 - 2016-11-14 05:14:16 EST - FINE - LOCAL - Socket disconnected.
+#18 - 2016-11-14 05:14:16 EST - INFO - LOCAL - State: NOT_AUTHENTICATED, State info: 
+#18 - 2016-11-14 05:14:16 EST - INFO - CONTROL - USER amir
+#18 - 2016-11-14 05:14:16 EST - INFO - CONTROL - Writing to control: 331 Username okay, need password.
+#18 - 2016-11-14 05:14:17 EST - FINE - LOCAL - Socket disconnected.
+#18 - 2016-11-14 05:14:17 EST - INFO - LOCAL - State: LOGGING_IN, State info: amir
+#18 - 2016-11-14 05:14:17 EST - INFO - CONTROL - PASS 123456
+#18 - 2016-11-14 05:14:17 EST - INFO - CONTROL - Writing to control: 230 Logged in, enjoy.
+#18 - 2016-11-14 05:14:18 EST - FINE - LOCAL - Socket disconnected.
+#18 - 2016-11-14 05:14:18 EST - INFO - LOCAL - State: AUTHENTICATED, State info: 
+#18 - 2016-11-14 05:14:18 EST - INFO - CONTROL - PORT 127,0,0,1,6,79
+#18 - 2016-11-14 05:14:18 EST - INFO - CONTROL - Writing to control: 200 Port command successful
+#18 - 2016-11-14 05:14:19 EST - FINE - LOCAL - Socket disconnected.
+#18 - 2016-11-14 05:14:19 EST - INFO - LOCAL - State: DATA_SOCKET, State info: 
+#18 - 2016-11-14 05:14:19 EST - INFO - CONTROL - list
+#18 - 2016-11-14 05:14:19 EST - INFO - CONTROL - Writing to control: 150 Opening data socket.
+226 Successfully transferred "D:\Dropbox\College\2016_fall\CS472\cs472-fall-2016\Homework\03\FTPServer\jar"
+#18 - 2016-11-14 05:14:25 EST - FINE - LOCAL - Socket disconnected.
+#18 - 2016-11-14 05:14:25 EST - INFO - LOCAL - State: AUTHENTICATED, State info: 
+#18 - 2016-11-14 05:14:25 EST - INFO - CONTROL - PORT 127,0,0,1,6,93
+#18 - 2016-11-14 05:14:25 EST - INFO - CONTROL - Writing to control: 200 Port command successful
+#18 - 2016-11-14 05:14:26 EST - FINE - LOCAL - Socket disconnected.
+#18 - 2016-11-14 05:14:26 EST - INFO - LOCAL - State: DATA_SOCKET, State info: 
+#18 - 2016-11-14 05:14:26 EST - INFO - CONTROL - RETR config.json
+#18 - 2016-11-14 05:14:26 EST - INFO - CONTROL - Writing to control: 226 Successfully transferred "config.json"

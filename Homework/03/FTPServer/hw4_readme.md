@@ -37,4 +37,4 @@ For example:
 
 The following video explains the program a little more in depth and can provide a larger insight than just this readme file.
 
-LINK
+https://www.youtube.com/watch?v=gYbz6hei_EQ
