@@ -1,5 +1,32 @@
-#1 - 2016-11-14 05:15:31 EST - INFO - LOCAL - Server will start with the port number: 45141
-#1 - 2016-11-14 05:15:31 EST - INFO - LOCAL - Welcome to Amir's FTP Server. The server is going to prepare the sockets. Remember you can use `newuser` to create a new user for the server.
+#1 - 2016-11-14 15:00:30 EST - INFO - LOCAL - Server will start with the port number: 45141
+#1 - 2016-11-14 15:00:30 EST - INFO - LOCAL - Welcome to Amir's FTP Server. The server is going to prepare the sockets. Remember you can use `newuser` to create a new user for the server.
 
-#1 - 2016-11-14 05:15:31 EST - INFO - LOCAL - Starting control socket...
-#1 - 2016-11-14 05:15:32 EST - INFO - LOCAL - 	Started control socket.
+#1 - 2016-11-14 15:00:30 EST - INFO - LOCAL - Starting control socket...
+#1 - 2016-11-14 15:00:31 EST - INFO - LOCAL - 	Started control socket.
+#13 - 2016-11-14 15:00:52 EST - INFO - LOCAL - Incoming connection from: 127.0.0.1:12727
+#13 - 2016-11-14 15:00:52 EST - INFO - CONTROL - Writing to control: 220 Welcome to my FTP :)
+#17 - 2016-11-14 15:00:55 EST - FINE - LOCAL - Socket disconnected.
+#17 - 2016-11-14 15:00:55 EST - INFO - LOCAL - State: NOT_AUTHENTICATED, State info: 
+#17 - 2016-11-14 15:00:55 EST - INFO - CONTROL - USER amir
+#18 - 2016-11-14 15:00:55 EST - INFO - CONTROL - Writing to control: 331 Username okay, need password.
+#17 - 2016-11-14 15:00:56 EST - FINE - LOCAL - Socket disconnected.
+#17 - 2016-11-14 15:00:56 EST - INFO - LOCAL - State: LOGGING_IN, State info: amir
+#17 - 2016-11-14 15:00:56 EST - INFO - CONTROL - PASS 123456
+#19 - 2016-11-14 15:00:56 EST - INFO - CONTROL - Writing to control: 230 Logged in, enjoy.
+#17 - 2016-11-14 15:00:57 EST - FINE - LOCAL - Socket disconnected.
+#17 - 2016-11-14 15:00:57 EST - INFO - LOCAL - State: AUTHENTICATED, State info: 
+#17 - 2016-11-14 15:00:57 EST - INFO - CONTROL - PASV
+#20 - 2016-11-14 15:00:57 EST - INFO - CONTROL - Writing to control: 227 Entering Passive Mode (127,0,0,1,49,196)
+#17 - 2016-11-14 15:00:58 EST - FINE - LOCAL - Socket disconnected.
+#17 - 2016-11-14 15:00:58 EST - INFO - LOCAL - State: DATA_SOCKET, State info: 
+#17 - 2016-11-14 15:00:58 EST - INFO - CONTROL - list
+#22 - 2016-11-14 15:00:58 EST - INFO - CONTROL - Writing to control: 150 Opening data socket.
+226 Successfully transferred "D:\Dropbox\College\2016_fall\CS472\cs472-fall-2016\Homework\03\FTPServer\jar"
+#17 - 2016-11-14 15:01:04 EST - FINE - LOCAL - Socket disconnected.
+#17 - 2016-11-14 15:01:04 EST - INFO - LOCAL - State: AUTHENTICATED, State info: 
+#17 - 2016-11-14 15:01:04 EST - INFO - CONTROL - PASV
+#24 - 2016-11-14 15:01:04 EST - INFO - CONTROL - Writing to control: 227 Entering Passive Mode (127,0,0,1,49,210)
+#17 - 2016-11-14 15:01:05 EST - FINE - LOCAL - Socket disconnected.
+#17 - 2016-11-14 15:01:05 EST - INFO - LOCAL - State: DATA_SOCKET, State info: 
+#17 - 2016-11-14 15:01:05 EST - INFO - CONTROL - RETR keystore.jks
+#26 - 2016-11-14 15:01:05 EST - INFO - CONTROL - Writing to control: 421 Error.

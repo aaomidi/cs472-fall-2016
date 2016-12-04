@@ -135,7 +135,17 @@ public class FTPConnection {
                 }
                 writeToControl("503 Bad sequence of commands");
             } else {
-                writeToControl(ftpCommand.execute(this, split[0], args));
+                final FTPConnection instance = this;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            writeToControl(ftpCommand.execute(instance, split[0], args));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
         }
         try {
